@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>Label guides</_name>
+  <id>org.inkscape.effect.labelguides</id>
+  <dependency type="executable" location="extensions">label_guides.py</dependency>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+
+  <param name="label_preset" type="enum" appearance="minimal" _gui-text="Label preset:">
+    <_item value="custom">Custom...</_item>
+    <_item value="LP35_37R">37mm Round Labels (35 per sheet)</_item>
+  </param>
+  <param name="units" type="enum" appearance="minimal" _gui-text="Custom label units:">
+      <_item value="mm">mm</_item>
+      <_item value="in">inch</_item>
+  </param>
+  <param name="margin_l"    type="float" min="0" max="1000" _gui-text="Left margin">8.5</param>
+  <param name="margin_t"    type="float" min="0" max="1000" _gui-text="Top margin">13></param>
+  <param name="size_x"      type="float" min="0" max="1000" _gui-text="Label X size">37</param>
+  <param name="size_y"      type="float" min="0" max="1000" _gui-text="Label Y size">37</param>
+  <param name="pitch_x"     type="float" min="0" max="1000" _gui-text="Label X pitch">39</param>
+  <param name="pitch_y"     type="float" min="0" max="1000" _gui-text="Label Y pitch">39</param>
+  <param name="count_x"     type="int"   min="0" max="1000" _gui-text="Number Across">5</param>
+  <param name="count_y"     type="int"   min="0" max="1000" _gui-text="Number Down">7</param>
+  <param name="shapes" type="enum" appearance="minimal" _gui-text="Label Shapes:">
+    <_item value="none">None</_item>
+    <_item value="circle">Circle/Ellipse</_item>
+    <_item value="rect">Rectangle</_item>
+  </param>
+  <param name="delete_existing_guides" type="boolean" _gui-text="Delete existing guides">false</param>
+  <effect>
+    <object-type>all</object-type>
+    <effects-menu>
+      <submenu _name="Render"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">label_guides.py</command>
+  </script>
+</inkscape-extension>
+
