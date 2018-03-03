@@ -27,6 +27,14 @@ GUIDE_ORIENT = {
         'horz': '0,1'
 }
 
+# Preset list
+# Regular grids defined as:
+#       'reg', unit, l marg, t marg, X size, Y size, X pitch, Y pitch,
+#       Number across, Number down, shapes
+PRESETS = {
+        "LP35_37R": ['reg', 'mm', 8.5, 13, 37, 37, 39, 39, 5, 7, 'round']
+}
+
 
 def createGuide(x, y, orientation, parent):
     """ Create a sodipodi:guide node on the given parent
@@ -159,11 +167,33 @@ class LabelGuides(inkex.Effect):
 
             return custom_opts
 
-        def _construct_preset_opts(self, preset):
+        def _construct_preset_opts(self, preset_id):
             """Construct an options object for a preset label template
             """
+            preset = PRESETS[preset_id]
 
-            return {}
+            unit = preset[1]
+
+            opts = {
+                    'margin': {
+                        'l': self._to_uu(preset[2], unit),
+                        't': self._to_uu(preset[3], unit)
+                     },
+                    'size': {
+                        'x': self._to_uu(preset[4], unit),
+                        'y': self._to_uu(preset[5], unit)
+                    },
+                    'pitch': {
+                        'x': self._to_uu(preset[6], unit),
+                        'y': self._to_uu(preset[7], unit)
+                    },
+                    'count': {
+                        'x': preset[8],
+                        'y': preset[9]
+                    }
+            }
+
+            return opts
 
         def _get_regular_guides(self, label_opts):
             """Get the guides for a set of labels defined by a regular grid

@@ -7,7 +7,7 @@
 
   <param name="label_preset" type="enum" appearance="minimal" _gui-text="Label preset:">
     <_item value="custom">Custom...</_item>
-    <_item value="LP35_37R">37mm Round Labels (35 per sheet)</_item>
+    <_item value="LP35_37R">37mm Round Labels (35 per sheet) [LP35/37R]</_item>
   </param>
   <param name="units" type="enum" appearance="minimal" _gui-text="Custom label units:">
       <_item value="mm">mm</_item>
