@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
 import inkex
+import simplestyle
 
 GUIDE_ORIENT = {
         'vert': '1,0',
@@ -32,7 +33,7 @@ GUIDE_ORIENT = {
 #       'reg', unit, l marg, t marg, X size, Y size, X pitch, Y pitch,
 #       Number across, Number down, shapes
 PRESETS = {
-        "LP35_37R": ['reg', 'mm', 8.5, 13, 37, 37, 39, 39, 5, 7, 'round']
+        "LP35_37R": ['reg', 'mm', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle']
 }
 
 
@@ -46,230 +47,312 @@ def createGuide(x, y, orientation, parent):
 
 
 def deleteAllGuides(document):
-        # getting the parent's tag of the guides
-        nv = document.xpath(
-                '/svg:svg/sodipodi:namedview', namespaces=inkex.NSS)[0]
+    # getting the parent's tag of the guides
+    nv = document.xpath(
+            '/svg:svg/sodipodi:namedview', namespaces=inkex.NSS)[0]
 
-        # getting all the guides
-        children = document.xpath('/svg:svg/sodipodi:namedview/sodipodi:guide',
-                                  namespaces=inkex.NSS)
+    # getting all the guides
+    children = document.xpath('/svg:svg/sodipodi:namedview/sodipodi:guide',
+                              namespaces=inkex.NSS)
 
-        # removing each guides
-        for element in children:
-                nv.remove(element)
+    # removing each guides
+    for element in children:
+            nv.remove(element)
+
+
+def draw_SVG_ellipse(rx, ry, cx, cy, style, parent):
+
+    attribs = {
+        'style': simplestyle.formatStyle(style),
+        inkex.addNS('cx', 'sodipodi'):   str(cx),
+        inkex.addNS('cy', 'sodipodi'):   str(cy),
+        inkex.addNS('rx', 'sodipodi'):   str(rx),
+        inkex.addNS('ry', 'sodipodi'):   str(ry),
+        inkex.addNS('type', 'sodipodi'): 'arc',
+    }
+
+    inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), attribs)
+
+
+def draw_SVG_rect(x, y, w, h, round, style, parent):
+
+    attribs = {
+        'style':    simplestyle.formatStyle(style),
+        'height':   str(h),
+        'width':    str(w),
+        'x':        str(x),
+        'y':        str(y)
+    }
+
+    if round:
+        attribs['ry'] = str(round)
+
+    inkex.etree.SubElement(parent, inkex.addNS('rect', 'svg'), attribs)
 
 
 class LabelGuides(inkex.Effect):
 
-        def __init__(self):
+    def __init__(self):
 
-            inkex.Effect.__init__(self)
+        inkex.Effect.__init__(self)
 
-            self.OptionParser.add_option(
-                '--label_preset',
-                action='store', type='string',
-                dest='label_preset', default='custom',
-                help='Use the given preset, overriding all other parameters')
+        self.OptionParser.add_option(
+            '--label_preset',
+            action='store', type='string',
+            dest='label_preset', default='custom',
+            help='Use the given preset, overriding all other parameters')
 
-            self.OptionParser.add_option(
-                '--units',
-                action='store', type='string',
-                dest='units', default="mm",
-                help='The units to use for custom label sizing')
+        self.OptionParser.add_option(
+            '--units',
+            action='store', type='string',
+            dest='units', default="mm",
+            help='The units to use for custom label sizing')
 
-            self.OptionParser.add_option(
-                '--margin_l',
-                action='store', type='float',
-                dest='margin_l', default=8.5,
-                help='Left page margin (mm)')
+        self.OptionParser.add_option(
+            '--margin_l',
+            action='store', type='float',
+            dest='margin_l', default=8.5,
+            help='Left page margin (mm)')
 
-            self.OptionParser.add_option(
-                '--margin_t',
-                action='store', type='float',
-                dest='margin_t', default=13,
-                help='Top page margin (mm)')
+        self.OptionParser.add_option(
+            '--margin_t',
+            action='store', type='float',
+            dest='margin_t', default=13,
+            help='Top page margin (mm)')
 
-            self.OptionParser.add_option(
-                '--size_x',
-                action='store', type='float',
-                dest='size_x', default=37,
-                help='Label X size (mm)')
+        self.OptionParser.add_option(
+            '--size_x',
+            action='store', type='float',
+            dest='size_x', default=37,
+            help='Label X size (mm)')
 
-            self.OptionParser.add_option(
-                '--size_y',
-                action='store', type='float',
-                dest='size_y', default=37,
-                help='Label Y size (mm)')
+        self.OptionParser.add_option(
+            '--size_y',
+            action='store', type='float',
+            dest='size_y', default=37,
+            help='Label Y size (mm)')
 
-            self.OptionParser.add_option(
-                '--pitch_x',
-                action='store', type='float',
-                dest='pitch_x', default=39,
-                help='Label X pitch (mm)')
+        self.OptionParser.add_option(
+            '--pitch_x',
+            action='store', type='float',
+            dest='pitch_x', default=39,
+            help='Label X pitch (mm)')
 
-            self.OptionParser.add_option(
-                '--pitch_y',
-                action='store', type='float',
-                dest='pitch_y', default=39,
-                help='Label Y pitch (mm)')
+        self.OptionParser.add_option(
+            '--pitch_y',
+            action='store', type='float',
+            dest='pitch_y', default=39,
+            help='Label Y pitch (mm)')
 
-            self.OptionParser.add_option(
-                '--count_x',
-                action='store', type='int',
-                dest='count_x', default=5,
-                help='Number of labels across')
+        self.OptionParser.add_option(
+            '--count_x',
+            action='store', type='int',
+            dest='count_x', default=5,
+            help='Number of labels across')
 
-            self.OptionParser.add_option(
-                '--count_y',
-                action='store', type='int',
-                dest='count_y', default=7,
-                help='Number of labels down')
+        self.OptionParser.add_option(
+            '--count_y',
+            action='store', type='int',
+            dest='count_y', default=7,
+            help='Number of labels down')
 
-            self.OptionParser.add_option(
-                '--shapes',
-                action='store', type='string',
-                dest='shapes', default='none',
-                help='Label shapes to draw')
+        self.OptionParser.add_option(
+            '--shapes',
+            action='store', type='string',
+            dest='shapes', default='none',
+            help='Label shapes to draw')
 
-            self.OptionParser.add_option(
-                '--delete_existing_guides',
-                action='store', type='inkbool',
-                dest='delete_existing_guides', default=False,
-                help='Delete existing guides from document')
-            # TODO: Option Parsing
+        self.OptionParser.add_option(
+            '--delete_existing_guides',
+            action='store', type='inkbool',
+            dest='delete_existing_guides', default=False,
+            help='Delete existing guides from document')
+        # TODO: Option Parsing
 
-        def _to_uu(self, val, unit):
-            return self.unittouu(str(val) + unit)
+    def _to_uu(self, val, unit):
+        return self.unittouu(str(val) + unit)
 
-        def _read_custom_options(self):
-            """Read custom label geometry options and produce
-            a dictionary of parameters for ingestion
-            """
-            unit = self.options.units
+    def _read_custom_options(self):
+        """Read custom label geometry options and produce
+        a dictionary of parameters for ingestion
+        """
+        unit = self.options.units
 
-            custom_opts = {}
+        custom_opts = {}
 
-            custom_opts['margin'] = {}
-            custom_opts['margin']['l'] = self._to_uu(self.options.margin_l, unit)
-            custom_opts['margin']['t'] = self._to_uu(self.options.margin_t, unit)
+        custom_opts['margin'] = {}
+        custom_opts['margin']['l'] = self._to_uu(self.options.margin_l, unit)
+        custom_opts['margin']['t'] = self._to_uu(self.options.margin_t, unit)
 
-            custom_opts['size'] = {}
-            custom_opts['size']['x'] = self._to_uu(self.options.size_x, unit)
-            custom_opts['size']['y'] = self._to_uu(self.options.size_y, unit)
+        custom_opts['size'] = {}
+        custom_opts['size']['x'] = self._to_uu(self.options.size_x, unit)
+        custom_opts['size']['y'] = self._to_uu(self.options.size_y, unit)
 
-            custom_opts['pitch'] = {}
-            custom_opts['pitch']['x'] = self._to_uu(self.options.pitch_x, unit)
-            custom_opts['pitch']['y'] = self._to_uu(self.options.pitch_y, unit)
+        custom_opts['pitch'] = {}
+        custom_opts['pitch']['x'] = self._to_uu(self.options.pitch_x, unit)
+        custom_opts['pitch']['y'] = self._to_uu(self.options.pitch_y, unit)
 
-            custom_opts['count'] = {}
-            custom_opts['count']['x'] = self.options.count_x
-            custom_opts['count']['y'] = self.options.count_y
+        custom_opts['count'] = {}
+        custom_opts['count']['x'] = self.options.count_x
+        custom_opts['count']['y'] = self.options.count_y
 
-            return custom_opts
+        custom_opts['shapes'] = self.options.shapes
 
-        def _construct_preset_opts(self, preset_id):
-            """Construct an options object for a preset label template
-            """
-            preset = PRESETS[preset_id]
+        return custom_opts
 
-            unit = preset[1]
+    def _construct_preset_opts(self, preset_id):
+        """Construct an options object for a preset label template
+        """
+        preset = PRESETS[preset_id]
 
-            opts = {
-                    'margin': {
-                        'l': self._to_uu(preset[2], unit),
-                        't': self._to_uu(preset[3], unit)
-                     },
-                    'size': {
-                        'x': self._to_uu(preset[4], unit),
-                        'y': self._to_uu(preset[5], unit)
-                    },
-                    'pitch': {
-                        'x': self._to_uu(preset[6], unit),
-                        'y': self._to_uu(preset[7], unit)
-                    },
-                    'count': {
-                        'x': preset[8],
-                        'y': preset[9]
-                    }
-            }
+        unit = preset[1]
 
-            return opts
+        opts = {
+                'margin': {
+                    'l': self._to_uu(preset[2], unit),
+                    't': self._to_uu(preset[3], unit)
+                 },
+                'size': {
+                    'x': self._to_uu(preset[4], unit),
+                    'y': self._to_uu(preset[5], unit)
+                },
+                'pitch': {
+                    'x': self._to_uu(preset[6], unit),
+                    'y': self._to_uu(preset[7], unit)
+                },
+                'count': {
+                    'x': preset[8],
+                    'y': preset[9]
+                },
+                'shapes': preset[10]
+        }
 
-        def _get_regular_guides(self, label_opts):
-            """Get the guides for a set of labels defined by a regular grid
+        return opts
 
-            This is done so that irregular-grid presets can be defined if
-            needed
-            """
+    def _get_regular_guides(self, label_opts):
+        """Get the guides for a set of labels defined by a regular grid
 
-            guides = {'v': [], 'h': []}
+        This is done so that irregular-grid presets can be defined if
+        needed
+        """
 
-            x = label_opts['margin']['l']
+        guides = {'v': [], 'h': []}
 
-            for x_idx in range(label_opts['count']['x']):
+        x = label_opts['margin']['l']
 
-                l_pos = x
-                r_pos = x + label_opts['size']['x']
+        for x_idx in range(label_opts['count']['x']):
 
-                guides['v'].extend([l_pos, r_pos])
+            l_pos = x
+            r_pos = x + label_opts['size']['x']
 
-                # Step over to next label
-                x += label_opts['pitch']['x']
+            guides['v'].extend([l_pos, r_pos])
 
-            # Horizontal guides, top to bottom
-            height = self.unittouu(self.getDocumentHeight())
+            # Step over to next label
+            x += label_opts['pitch']['x']
 
-            y = height - label_opts['margin']['t']
+        # Horizontal guides, top to bottom
+        height = self.unittouu(self.getDocumentHeight())
 
-            for y_idx in range(label_opts['count']['y']):
+        y = height - label_opts['margin']['t']
 
-                t_pos = y
-                b_pos = y - label_opts['size']['y']
+        for y_idx in range(label_opts['count']['y']):
 
-                guides['h'].extend([t_pos, b_pos])
+            t_pos = y
+            b_pos = y - label_opts['size']['y']
 
-                # Step over to next label
-                y -= label_opts['pitch']['y']
+            guides['h'].extend([t_pos, b_pos])
 
-            return guides
+            # Step over to next label
+            y -= label_opts['pitch']['y']
 
-        def _draw_label_guides(self, document, label_opts):
-            """Draws label guides from a regular guide description object
-            """
-            guides = self._get_regular_guides(label_opts)
+        return guides
 
-            self._draw_guides(document, guides)
+    def _draw_label_guides(self, document, label_opts):
+        """Draws label guides from a regular guide description object
+        """
+        guides = self._get_regular_guides(label_opts)
 
-        def _draw_guides(self, document, guides):
-            """
-            Draw guides from a generic list of h/v guides
-            """
-            # Get parent tag of the guides
-            nv = document.find(inkex.addNS('namedview', 'sodipodi'))
+        self._draw_guides(document, guides)
 
-            # Draw vertical guides
-            for g in guides['v']:
-                createGuide(g, 0, GUIDE_ORIENT['vert'], nv)
+    def _draw_guides(self, document, guides):
+        """
+        Draw guides from a generic list of h/v guides
+        """
+        # Get parent tag of the guides
+        nv = document.find(inkex.addNS('namedview', 'sodipodi'))
 
-            for g in guides['h']:
-                createGuide(0, g, GUIDE_ORIENT['horz'], nv)
+        # Draw vertical guides
+        for g in guides['v']:
+            createGuide(g, 0, GUIDE_ORIENT['vert'], nv)
 
-        def effect(self):
+        for g in guides['h']:
+            createGuide(0, g, GUIDE_ORIENT['horz'], nv)
 
-            # Read in custom options
-            label_preset = self.options.label_preset
+    def _draw_shapes(self, document, label_opts):
+        """
+        Draw label shapes from a regular grid
+        """
 
-            if label_preset == "custom":
-                # construct from parameters
-                label_opts = self._read_custom_options()
-            else:
-                # construct from a preset
-                label_opts = self._construct_preset_opts(label_preset)
+        style = {
+                'stroke': '#000000',
+                'stroke-width': self._to_uu(1, "px"),
+                'fill': "none"
+        }
 
-            if self.options.delete_existing_guides:
-                deleteAllGuides(self.document)
+        guides = self._get_regular_guides(label_opts)
+        shape = label_opts['shapes']
 
-            self._draw_label_guides(self.document, label_opts)
+        gid = self.uniqueId('labelShapes')
+        shapeGroup = inkex.etree.SubElement(self.current_layer, 'g', {'id': gid})
+
+        # guides start from the bottom, SVG items from the top
+        height = self.unittouu(self.getDocumentHeight())
+
+        # draw shapes between every set of two guides
+        for xi in range(0, len(guides['v']), 2):
+
+            for yi in range(0, len(guides['h']), 2):
+
+                if shape == 'circle':
+                    cx = (guides['v'][xi] + guides['v'][xi + 1]) / 2
+                    cy = (guides['h'][yi] + guides['h'][yi + 1]) / 2
+
+                    rx = cx - guides['v'][xi]
+                    ry = guides['h'][yi] - cy
+
+                    draw_SVG_ellipse(rx, ry, cx, height - cy, style, shapeGroup)
+
+                elif shape == "rect":
+
+                    x = guides['v'][xi]
+                    w = guides['v'][xi + 1] - x
+
+                    y = guides['h'][yi]
+                    h = y - guides['h'][yi + 1]
+
+                    rnd = self._to_uu(1, "mm")
+
+                    draw_SVG_rect(x, height - y, w, h, rnd, style, shapeGroup)
+
+    def effect(self):
+
+        # Read in custom options
+        label_preset = self.options.label_preset
+
+        if label_preset == "custom":
+            # construct from parameters
+            label_opts = self._read_custom_options()
+        else:
+            # construct from a preset
+            label_opts = self._construct_preset_opts(label_preset)
+
+        if self.options.delete_existing_guides:
+            deleteAllGuides(self.document)
+
+        self._draw_label_guides(self.document, label_opts)
+
+        if label_opts['shapes'] != "none":
+            self._draw_shapes(self.document, label_opts)
 
 
 if __name__ == '__main__':
