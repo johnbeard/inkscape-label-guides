@@ -37,16 +37,25 @@ PRESETS = {
 }
 
 
-def createGuide(x, y, orientation, parent):
+def add_SVG_guide(x, y, orientation, colour, parent):
     """ Create a sodipodi:guide node on the given parent
     """
+
+    attribs = {
+            'position': str(x) + "," + str(y),
+            'orientation': orientation
+    }
+
+    if colour is not None:
+        attribs[inkex.addNS('color', 'inkscape')] = colour
+
     inkex.etree.SubElement(
             parent,
-            '{http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd}guide',
-            {'position': str(x) + "," + str(y), 'orientation': orientation})
+            inkex.addNS('guide', 'sodipodi'),
+            attribs)
 
 
-def deleteAllGuides(document):
+def delete_all_guides(document):
     # getting the parent's tag of the guides
     nv = document.xpath(
             '/svg:svg/sodipodi:namedview', namespaces=inkex.NSS)[0]
@@ -88,6 +97,17 @@ def draw_SVG_rect(x, y, w, h, round, style, parent):
         attribs['ry'] = str(round)
 
     inkex.etree.SubElement(parent, inkex.addNS('rect', 'svg'), attribs)
+
+
+def add_SVG_layer(parent, gid, label):
+
+    layer = inkex.etree.SubElement(parent, 'g', {
+        'id': gid,
+        inkex.addNS('groupmode', 'inkscape'): 'layer',
+        inkex.addNS('label', 'inkscape'): label
+    })
+
+    return layer
 
 
 class LabelGuides(inkex.Effect):
@@ -159,7 +179,7 @@ class LabelGuides(inkex.Effect):
         self.OptionParser.add_option(
             '--shapes',
             action='store', type='string',
-            dest='shapes', default='none',
+            dest='shapes', default='rect',
             help='Label shapes to draw')
 
         self.OptionParser.add_option(
@@ -167,6 +187,31 @@ class LabelGuides(inkex.Effect):
             action='store', type='inkbool',
             dest='delete_existing_guides', default=False,
             help='Delete existing guides from document')
+
+        self.OptionParser.add_option(
+            '--draw_edge_guides',
+            action='store', type='inkbool',
+            dest='draw_edge_guides', default=True,
+            help='Draw guides at label edges')
+
+        self.OptionParser.add_option(
+            '--inset',
+            action='store', type='float',
+            dest='inset', default=5,
+            help='Inset to use for inset guides')
+
+        self.OptionParser.add_option(
+            '--draw_inset_guides',
+            action='store', type='inkbool',
+            dest='draw_inset_guides', default=True,
+            help='Draw guides inset to label edges')
+
+        self.OptionParser.add_option(
+            '--draw_shapes',
+            action='store', type='inkbool',
+            dest='draw_shapes', default=True,
+            help='Draw label outline shapes')
+
         # TODO: Option Parsing
 
     def _to_uu(self, val, unit):
@@ -229,7 +274,7 @@ class LabelGuides(inkex.Effect):
 
         return opts
 
-    def _get_regular_guides(self, label_opts):
+    def _get_regular_guides(self, label_opts, inset):
         """Get the guides for a set of labels defined by a regular grid
 
         This is done so that irregular-grid presets can be defined if
@@ -242,8 +287,8 @@ class LabelGuides(inkex.Effect):
 
         for x_idx in range(label_opts['count']['x']):
 
-            l_pos = x
-            r_pos = x + label_opts['size']['x']
+            l_pos = x + inset
+            r_pos = x + label_opts['size']['x'] - inset
 
             guides['v'].extend([l_pos, r_pos])
 
@@ -257,8 +302,8 @@ class LabelGuides(inkex.Effect):
 
         for y_idx in range(label_opts['count']['y']):
 
-            t_pos = y
-            b_pos = y - label_opts['size']['y']
+            t_pos = y - inset
+            b_pos = y - label_opts['size']['y'] + inset
 
             guides['h'].extend([t_pos, b_pos])
 
@@ -267,26 +312,26 @@ class LabelGuides(inkex.Effect):
 
         return guides
 
-    def _draw_label_guides(self, document, label_opts):
+    def _draw_label_guides(self, document, label_opts, inset, colour):
         """Draws label guides from a regular guide description object
         """
-        guides = self._get_regular_guides(label_opts)
+        guides = self._get_regular_guides(label_opts, inset)
 
-        self._draw_guides(document, guides)
+        self._draw_guides(document, guides, colour)
 
-    def _draw_guides(self, document, guides):
+    def _draw_guides(self, document, guides, colour):
         """
         Draw guides from a generic list of h/v guides
         """
         # Get parent tag of the guides
-        nv = document.find(inkex.addNS('namedview', 'sodipodi'))
+        nv = self.getNamedView()
 
         # Draw vertical guides
         for g in guides['v']:
-            createGuide(g, 0, GUIDE_ORIENT['vert'], nv)
+            add_SVG_guide(g, 0, GUIDE_ORIENT['vert'], colour, nv)
 
         for g in guides['h']:
-            createGuide(0, g, GUIDE_ORIENT['horz'], nv)
+            add_SVG_guide(0, g, GUIDE_ORIENT['horz'], colour, nv)
 
     def _draw_shapes(self, document, label_opts):
         """
@@ -299,11 +344,13 @@ class LabelGuides(inkex.Effect):
                 'fill': "none"
         }
 
-        guides = self._get_regular_guides(label_opts)
+        guides = self._get_regular_guides(label_opts, 0)
         shape = label_opts['shapes']
 
-        gid = self.uniqueId('labelShapes')
-        shapeGroup = inkex.etree.SubElement(self.current_layer, 'g', {'id': gid})
+        shapeLayer = add_SVG_layer(
+                self.document.getroot(),
+                self.uniqueId("outlineLayer"),
+                "Label outlines")
 
         # guides start from the bottom, SVG items from the top
         height = self.unittouu(self.getDocumentHeight())
@@ -320,7 +367,7 @@ class LabelGuides(inkex.Effect):
                     rx = cx - guides['v'][xi]
                     ry = guides['h'][yi] - cy
 
-                    draw_SVG_ellipse(rx, ry, cx, height - cy, style, shapeGroup)
+                    draw_SVG_ellipse(rx, ry, cx, height - cy, style, shapeLayer)
 
                 elif shape == "rect":
 
@@ -332,7 +379,7 @@ class LabelGuides(inkex.Effect):
 
                     rnd = self._to_uu(1, "mm")
 
-                    draw_SVG_rect(x, height - y, w, h, rnd, style, shapeGroup)
+                    draw_SVG_rect(x, height - y, w, h, rnd, style, shapeLayer)
 
     def effect(self):
 
@@ -347,11 +394,16 @@ class LabelGuides(inkex.Effect):
             label_opts = self._construct_preset_opts(label_preset)
 
         if self.options.delete_existing_guides:
-            deleteAllGuides(self.document)
+            delete_all_guides(self.document)
 
-        self._draw_label_guides(self.document, label_opts)
+        if self.options.draw_edge_guides:
+            self._draw_label_guides(self.document, label_opts, 0, "#00A000")
 
-        if label_opts['shapes'] != "none":
+        if self.options.draw_inset_guides and self.options.inset > 0.0:
+            self._draw_label_guides(self.document, label_opts,
+                                    self.options.inset, None)
+
+        if self.options.draw_shapes:
             self._draw_shapes(self.document, label_opts)
 
 

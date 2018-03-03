@@ -22,11 +22,14 @@
   <param name="count_x"     type="int"   min="0" max="1000" _gui-text="Number Across">5</param>
   <param name="count_y"     type="int"   min="0" max="1000" _gui-text="Number Down">7</param>
   <param name="shapes" type="enum" appearance="minimal" _gui-text="Label Shapes:">
-    <_item value="none">None</_item>
-    <_item value="circle">Circle/Ellipse</_item>
     <_item value="rect">Rectangle</_item>
+    <_item value="circle">Circle/Ellipse</_item>
   </param>
   <param name="delete_existing_guides" type="boolean" _gui-text="Delete existing guides">false</param>
+  <param name="draw_edge_guides" type="boolean" _gui-text="Draw label edge guides">true</param>
+  <param name="inset" type="float"   min="0" max="1000" _gui-text="Guide inset">5</param>
+  <param name="draw_inset_guides" type="boolean" _gui-text="Draw label inset guides">true</param>
+  <param name="draw_shapes" type="boolean" _gui-text="Draw label shapes">true</param>
   <effect>
     <object-type>all</object-type>
     <effects-menu>
