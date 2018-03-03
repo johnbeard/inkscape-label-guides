@@ -165,47 +165,64 @@ class LabelGuides(inkex.Effect):
 
             return {}
 
-        def _draw_label_guides(self, document, label_opts):
-            """Draws label guides onto the SVG document
+        def _get_regular_guides(self, label_opts):
+            """Get the guides for a set of labels defined by a regular grid
+
+            This is done so that irregular-grid presets can be defined if
+            needed
             """
 
-            # Get parent tag of the guides
-            nv = document.find(inkex.addNS('namedview', 'sodipodi'))
+            guides = {'v': [], 'h': []}
 
-            # Draw vertical guides, left to right
             x = label_opts['margin']['l']
 
             for x_idx in range(label_opts['count']['x']):
 
-                orient = GUIDE_ORIENT['vert']
-
                 l_pos = x
                 r_pos = x + label_opts['size']['x']
 
-                # Draw guide on label left and right
-                createGuide(l_pos, 0, orient, nv)
-                createGuide(r_pos, 0, orient, nv)
+                guides['v'].extend([l_pos, r_pos])
 
                 # Step over to next label
                 x += label_opts['pitch']['x']
 
-            # Draw horizontal guides, top to bottom
+            # Horizontal guides, top to bottom
             height = self.unittouu(self.getDocumentHeight())
 
             y = height - label_opts['margin']['t']
 
             for y_idx in range(label_opts['count']['y']):
 
-                orient = GUIDE_ORIENT['horz']
-
                 t_pos = y
                 b_pos = y - label_opts['size']['y']
 
-                createGuide(0, t_pos, orient, nv)
-                createGuide(0, b_pos, orient, nv)
+                guides['h'].extend([t_pos, b_pos])
 
                 # Step over to next label
                 y -= label_opts['pitch']['y']
+
+            return guides
+
+        def _draw_label_guides(self, document, label_opts):
+            """Draws label guides from a regular guide description object
+            """
+            guides = self._get_regular_guides(label_opts)
+
+            self._draw_guides(document, guides)
+
+        def _draw_guides(self, document, guides):
+            """
+            Draw guides from a generic list of h/v guides
+            """
+            # Get parent tag of the guides
+            nv = document.find(inkex.addNS('namedview', 'sodipodi'))
+
+            # Draw vertical guides
+            for g in guides['v']:
+                createGuide(g, 0, GUIDE_ORIENT['vert'], nv)
+
+            for g in guides['h']:
+                createGuide(0, g, GUIDE_ORIENT['horz'], nv)
 
         def effect(self):
 
