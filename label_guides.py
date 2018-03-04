@@ -30,10 +30,11 @@ GUIDE_ORIENT = {
 
 # Preset list
 # Regular grids defined as:
-#       'reg', unit, l marg, t marg, X size, Y size, X pitch, Y pitch,
-#       Number across, Number down, shapes
+#       'reg', unit, page_szie, l marg, t marg, X size, Y size,
+#       X pitch, Y pitch, Number across, Number down, shapes
 PRESETS = {
-        "LP35_37R": ['reg', 'mm', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle']
+        "LP35_37R":     ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle'],
+        "LP35_37SQ":    ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'rect'],
 }
 
 
@@ -66,7 +67,7 @@ def delete_all_guides(document):
 
     # removing each guides
     for element in children:
-            nv.remove(element)
+        nv.remove(element)
 
 
 def draw_SVG_ellipse(rx, ry, cx, cy, style, parent):
@@ -212,10 +213,30 @@ class LabelGuides(inkex.Effect):
             dest='draw_shapes', default=True,
             help='Draw label outline shapes')
 
+        self.OptionParser.add_option(
+            '--set_page_size',
+            action='store', type='inkbool',
+            dest='set_page_size', default=True,
+            help='Set page size (presets only)')
+
         # TODO: Option Parsing
 
     def _to_uu(self, val, unit):
         return self.unittouu(str(val) + unit)
+
+    def set_SVG_page_size(self, document, x, y, unit):
+
+        svg = document.getroot()
+
+        # Re-calculate viewbox in terms of User Units
+        new_uu_w = self._to_uu(x, unit)
+        new_uu_h = self._to_uu(y, unit)
+
+        # set SVG page size
+        svg.attrib['width'] = str(x) + unit
+        svg.attrib['height'] = str(y) + unit
+
+        svg.attrib['viewBox'] = "0 0 %f %f" % (new_uu_w, new_uu_h)
 
     def _read_custom_options(self):
         """Read custom label geometry options and produce
@@ -223,27 +244,40 @@ class LabelGuides(inkex.Effect):
         """
         unit = self.options.units
 
-        custom_opts = {}
-
-        custom_opts['margin'] = {}
-        custom_opts['margin']['l'] = self._to_uu(self.options.margin_l, unit)
-        custom_opts['margin']['t'] = self._to_uu(self.options.margin_t, unit)
-
-        custom_opts['size'] = {}
-        custom_opts['size']['x'] = self._to_uu(self.options.size_x, unit)
-        custom_opts['size']['y'] = self._to_uu(self.options.size_y, unit)
-
-        custom_opts['pitch'] = {}
-        custom_opts['pitch']['x'] = self._to_uu(self.options.pitch_x, unit)
-        custom_opts['pitch']['y'] = self._to_uu(self.options.pitch_y, unit)
-
-        custom_opts['count'] = {}
-        custom_opts['count']['x'] = self.options.count_x
-        custom_opts['count']['y'] = self.options.count_y
-
-        custom_opts['shapes'] = self.options.shapes
+        custom_opts = {
+                'units': self.options.units,
+                'page_size': None,
+                'margin': {
+                    'l': self._to_uu(self.options.margin_l, unit),
+                    't': self._to_uu(self.options.margin_t, unit)
+                },
+                'size': {
+                    'x': self._to_uu(self.options.size_x, unit),
+                    'y': self._to_uu(self.options.size_y, unit)
+                },
+                'pitch': {
+                    'x': self._to_uu(self.options.pitch_x, unit),
+                    'y': self._to_uu(self.options.pitch_y, unit)
+                },
+                'count': {
+                    'x': self.options.count_x,
+                    'y': self.options.count_y
+                },
+                'shapes': self.options.shapes
+        }
 
         return custom_opts
+
+    def _get_page_size(self, size):
+
+        if isinstance(size, (list,)):
+            # Explicit size
+            return size
+        elif size == "a4":
+            return [210, 297]
+
+        # Failed to find a useful size, None will inhibit setting the size
+        return None
 
     def _construct_preset_opts(self, preset_id):
         """Construct an options object for a preset label template
@@ -253,23 +287,25 @@ class LabelGuides(inkex.Effect):
         unit = preset[1]
 
         opts = {
+                'units': unit,
+                'page_size': self._get_page_size(preset[2]),
                 'margin': {
-                    'l': self._to_uu(preset[2], unit),
-                    't': self._to_uu(preset[3], unit)
+                    'l': self._to_uu(preset[3], unit),
+                    't': self._to_uu(preset[4], unit)
                  },
                 'size': {
-                    'x': self._to_uu(preset[4], unit),
-                    'y': self._to_uu(preset[5], unit)
+                    'x': self._to_uu(preset[5], unit),
+                    'y': self._to_uu(preset[6], unit)
                 },
                 'pitch': {
-                    'x': self._to_uu(preset[6], unit),
-                    'y': self._to_uu(preset[7], unit)
+                    'x': self._to_uu(preset[7], unit),
+                    'y': self._to_uu(preset[8], unit)
                 },
                 'count': {
-                    'x': preset[8],
-                    'y': preset[9]
+                    'x': preset[9],
+                    'y': preset[10]
                 },
-                'shapes': preset[10]
+                'shapes': preset[11]
         }
 
         return opts
@@ -381,6 +417,16 @@ class LabelGuides(inkex.Effect):
 
                     draw_SVG_rect(x, height - y, w, h, rnd, style, shapeLayer)
 
+    def _set_page_size(self, document, label_opts):
+
+        size = label_opts['page_size']
+        unit = label_opts['units']
+
+        inkex.errormsg(str(size))
+
+        if size is not None:
+            self.set_SVG_page_size(document, size[0], size[1], unit)
+
     def effect(self):
 
         # Read in custom options
@@ -396,6 +442,10 @@ class LabelGuides(inkex.Effect):
         if self.options.delete_existing_guides:
             delete_all_guides(self.document)
 
+        # Resize page first, otherwise guides won't be in the right places
+        if self.options.set_page_size:
+            self._set_page_size(self.document, label_opts)
+
         if self.options.draw_edge_guides:
             self._draw_label_guides(self.document, label_opts, 0, "#00A000")
 
@@ -405,7 +455,6 @@ class LabelGuides(inkex.Effect):
 
         if self.options.draw_shapes:
             self._draw_shapes(self.document, label_opts)
-
 
 if __name__ == '__main__':
     # Create effect instance and apply it.

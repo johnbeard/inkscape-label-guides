@@ -8,6 +8,7 @@
   <param name="label_preset" type="enum" appearance="minimal" _gui-text="Label preset:">
     <_item value="custom">Custom...</_item>
     <_item value="LP35_37R">37mm Round Labels (35 per sheet) [LP35/37R]</_item>
+    <_item value="LP35_37SQ">37mm Square Labels (35 per sheet) [LP35/37SQ]</_item>
   </param>
   <param name="custom_hdr" type="description" appearance="header">Custom Label Options</param>
   <param name="units" type="enum" appearance="minimal" _gui-text="Custom label units:">
@@ -32,6 +33,7 @@
   <param name="inset" type="float"   min="0" max="1000" _gui-text="Guide inset">5</param>
   <param name="draw_inset_guides" type="boolean" _gui-text="Draw label inset guides">true</param>
   <param name="draw_shapes" type="boolean" _gui-text="Draw label shapes">true</param>
+  <param name="set_page_size" type="boolean" _gui-text="Set page size (presets only)">false</param>
   <effect>
     <object-type>all</object-type>
     <effects-menu>
