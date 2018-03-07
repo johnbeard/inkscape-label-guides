@@ -1,0 +1,4 @@
+*.pyc
+
+# download cache
+*.sqlite
