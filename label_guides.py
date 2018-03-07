@@ -33,8 +33,51 @@ GUIDE_ORIENT = {
 #       'reg', unit, page_szie, l marg, t marg, X size, Y size,
 #       X pitch, Y pitch, Number across, Number down, shapes
 PRESETS = {
-        "LP35_37R":     ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle'],
-        "LP35_37SQ":    ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'rect'],
+    # Rounded rectangular labels in grid layout
+    'L7167':        ['reg', 'mm', 'a4', 5.2, 3.95, 199.6, 289.1, 289.1, 199.6, 1, 1, 'rrect']
+    'L7168':        ['reg', 'mm', 'a4', 5.2, 5, 199.6, 143.5, 143.5, 199.6, 1, 1, 'rrect']
+    'L7169':        ['reg', 'mm', 'a4', 4.65, 9.5, 99.1, 139, 139, 101.6, 2, 2, 'rrect']
+    'L7701':        ['reg', 'mm', 'a4', 9, 24.5, 192, 62, 62, 192, 1, 1, 'rrect']
+    'L7171':        ['reg', 'mm', 'a4', 5, 28.5, 200, 60, 60, 200, 1, 1, 'rrect']
+    'L7166':        ['reg', 'mm', 'a4', 4.65, 8.85, 99.1, 93.1, 93.1, 101.6, 2, 2, 'rrect']
+    'L4760':        ['reg', 'mm', 'a4', 9, 12, 192, 39, 39, 192, 1, 1, 'rrect']
+    'L7165':        ['reg', 'mm', 'a4', 4.65, 13.1, 99.1, 67.7, 67.7, 101.6, 2, 2, 'rrect']
+    'L7664':        ['reg', 'mm', 'a4', 18, 4.9, 70, 71.8, 71.8, 104, 2, 2, 'rrect']
+    'L7667':        ['reg', 'mm', 'a4', 38.5, 15.3, 133, 29.6, 29.6, 133, 1, 1, 'rrect']
+    'L7173':        ['reg', 'mm', 'a4', 4.65, 6, 99.1, 57, 57, 101.6, 2, 2, 'rrect']
+    'J5103':        ['reg', 'mm', 'a4', 4.75, 13.5, 38.1, 135, 135, 40.6, 5, 5, 'rrect']
+    'L7666':        ['reg', 'mm', 'a4', 23, 18.5, 70, 52, 52, 94, 2, 2, 'rrect']
+    'L7783':        ['reg', 'mm', 'a4', 7.85, 21.75, 95.8, 50.7, 50.7, 98.5, 2, 2, 'rrect']
+    'L7164':        ['reg', 'mm', 'a4', 7.25, 4.5, 63.5, 72, 72, 66, 3, 3, 'rrect']
+    'L7671':        ['reg', 'mm', 'a4', 27.55, 9.3, 76.2, 46.4, 46.4, 78.7, 2, 2, 'rrect']
+    'L7177':        ['reg', 'mm', 'a4', 4.65, 21.6, 99.1, 42.3, 42.3, 101.6, 2, 2, 'rrect']
+    'L7163':        ['reg', 'mm', 'a4', 4.65, 15.15, 99.1, 38.1, 38.1, 101.6, 2, 2, 'rrect']
+    'L7668':        ['reg', 'mm', 'a4', 13.5, 21.25, 59, 50.9, 50.9, 62, 3, 3, 'rrect']
+    'L7162':        ['reg', 'mm', 'a4', 4.65, 12.9, 99.1, 33.9, 33.9, 101.6, 2, 2, 'rrect']
+    'L7674':        ['reg', 'mm', 'a4', 32.5, 12.5, 145, 17, 17, 145, 1, 1, 'rrect']
+    'L7161':        ['reg', 'mm', 'a4', 7.25, 8.7, 63.5, 46.6, 46.6, 66, 3, 3, 'rrect']
+    'L7172':        ['reg', 'mm', 'a4', 3.75, 13.5, 100, 30, 30, 102.5, 2, 2, 'rrect']
+    'J5101':        ['reg', 'mm', 'a4', 4.75, 10.5, 38.1, 69, 69, 40.6, 5, 5, 'rrect']
+    'L7160':        ['reg', 'mm', 'a4', 7.25, 15.15, 63.5, 38.1, 38.1, 66, 3, 3, 'rrect']
+    'L7159':        ['reg', 'mm', 'a4', 7.25, 12.9, 63.5, 33.9, 33.9, 66, 3, 3, 'rrect']
+    'L7665':        ['reg', 'mm', 'a4', 22, 21.6, 72, 21.15, 21.15, 94, 2, 2, 'rrect']
+    'L7170':        ['reg', 'mm', 'a4', 38, 16.5, 134, 11, 11, 134, 1, 1, 'rrect']
+    'L6011':        ['reg', 'mm', 'a4', 7.25, 15.3, 63.5, 29.6, 29.6, 66, 3, 3, 'rrect']
+    'LP33_53':      ['reg', 'mm', 'a4', 21, 17.5, 54, 22, 24, 57, 3, 3, 'rrect']
+    'LP36_49':      ['reg', 'mm', 'a4', 4.8, 15.3, 48.9, 29.6, 29.6, 50.5, 4, 4, 'rrect']
+    'L7654':        ['reg', 'mm', 'a4', 9.7, 21.5, 45.7, 25.4, 25.4, 48.3, 4, 4, 'rrect']
+    'L7636':        ['reg', 'mm', 'a4', 9.85, 21.3, 45.7, 21.2, 21.2, 48.2, 4, 4, 'rrect']
+    'LP56_89':      ['reg', 'mm', 'a4', 8, 8.5, 89, 10, 10, 105, 2, 2, 'rrect']
+    'L7651':        ['reg', 'mm', 'a4', 4.75, 10.7, 38.1, 21.2, 21.2, 40.6, 5, 5, 'rrect']
+    'L7656':        ['reg', 'mm', 'a4', 5.95, 15.95, 46, 11.1, 12.7, 50.7, 4, 4, 'rrect']
+    'L7658':        ['reg', 'mm', 'a4', 8.6, 13.5, 25.4, 10, 10, 27.9, 7, 7, 'rrect']
+    'L7657':        ['reg', 'mm', 'a4', 4.75, 13.5, 17.8, 10, 10, 20.3, 10, 10, 'rrect']
+
+    # Round labels
+    "LP35_37R":     ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle'],
+
+    # Square labels
+    "LP35_37SQ":    ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'rrect'],
 }
 
 
@@ -403,9 +446,10 @@ class LabelGuides(inkex.Effect):
                     rx = cx - guides['v'][xi]
                     ry = guides['h'][yi] - cy
 
-                    draw_SVG_ellipse(rx, ry, cx, height - cy, style, shapeLayer)
+                    draw_SVG_ellipse(rx, ry, cx, height - cy, style,
+                                     shapeLayer)
 
-                elif shape == "rect":
+                elif shape in ["rect", "rrect"]:
 
                     x = guides['v'][xi]
                     w = guides['v'][xi + 1] - x
@@ -413,7 +457,7 @@ class LabelGuides(inkex.Effect):
                     y = guides['h'][yi]
                     h = y - guides['h'][yi + 1]
 
-                    rnd = self._to_uu(1, "mm")
+                    rnd = self._to_uu(1, "mm") if (shape == "rrect") else None
 
                     draw_SVG_rect(x, height - y, w, h, rnd, style, shapeLayer)
 
@@ -455,6 +499,7 @@ class LabelGuides(inkex.Effect):
 
         if self.options.draw_shapes:
             self._draw_shapes(self.document, label_opts)
+
 
 if __name__ == '__main__':
     # Create effect instance and apply it.
