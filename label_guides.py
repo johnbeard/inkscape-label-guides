@@ -73,6 +73,38 @@ PRESETS = {
     'L7658':        ['reg', 'mm', 'a4', 8.6, 13.5, 25.4, 10, 10, 27.9, 7, 7, 'rrect'],
     'L7657':        ['reg', 'mm', 'a4', 4.75, 13.5, 17.8, 10, 10, 20.3, 10, 10, 'rrect'],
 
+    # Rect labels
+    'L7784':        ['reg', 'mm', 'a4', 0, 0, 210, 297, 297, 210, 1, 1, 'rect'],
+    'LP2_105':      ['reg', 'mm', 'a4', 0, 0, 105, 297, 297, 105, 2, 2, 'rect'],
+    '3655':         ['reg', 'mm', 'a4', 0, 0, 210, 148.5, 148.5, 210, 1, 1, 'rect'],
+    'LP3_210':      ['reg', 'mm', 'a4', 0, 0, 210, 99, 99, 210, 1, 1, 'rect'],
+    '3483':         ['reg', 'mm', 'a4', 0, 0, 105, 148.5, 148.5, 105, 2, 2, 'rect'],
+    'LP4_210':      ['reg', 'mm', 'a4', 0, 0, 210, 74.25, 74.25, 210, 1, 1, 'rect'],
+    'LP6_70':       ['reg', 'mm', 'a4', 0, 0, 70, 148.5, 148.5, 70, 3, 3, 'rect'],
+    'LP6_105':      ['reg', 'mm', 'a4', 0, 0, 105, 99, 99, 105, 2, 2, 'rect'],
+    '3427':         ['reg', 'mm', 'a4', 0, 0, 105, 74.25, 74.25, 105, 2, 2, 'rect'],
+    'LP8_105S':     ['reg', 'mm', 'a4', 0, 7.1, 105, 70.7, 70.7, 105, 2, 2, 'rect'],
+    'LP10_105':     ['reg', 'mm', 'a4', 0, 0, 105, 59.4, 59.4, 105, 2, 2, 'rect'],
+    '3425':         ['reg', 'mm', 'a4', 0, 4.625, 105, 57.55, 57.55, 105, 2, 2, 'rect'],
+    'LP12_105':     ['reg', 'mm', 'a4', 0, 0, 105, 49.5, 49.5, 105, 2, 2, 'rect'],
+    '3424':         ['reg', 'mm', 'a4', 0, 4.8, 105, 47.9, 47.9, 105, 2, 2, 'rect'],
+    '3653':         ['reg', 'mm', 'a4', 0, 0, 105, 42.42, 42.42, 105, 2, 2, 'rect'],
+    'LP15_70':      ['reg', 'mm', 'a4', 0, 0, 70, 59.4, 59.4, 70, 3, 3, 'rect'],
+    'LP15_70S':     ['reg', 'mm', 'a4', 0, 21.75, 70, 50.7, 50.7, 70, 3, 3, 'rect'],
+    '3484':         ['reg', 'mm', 'a4', 0, 0, 105, 37.12, 37.12, 105, 2, 2, 'rect'],
+    '3423':         ['reg', 'mm', 'a4', 0, 8.7, 105, 34.95, 34.95, 105, 2, 2, 'rect'],
+    '3652':         ['reg', 'mm', 'a4', 0, 0, 70, 42.42, 42.42, 70, 3, 3, 'rect'],
+    'LP21_70S':     ['reg', 'mm', 'a4', 0, 15.15, 70, 38.1, 38.1, 70, 3, 3, 'rect'],
+    '3474':         ['reg', 'mm', 'a4', 0, 0, 70, 37.12, 37.12, 70, 3, 3, 'rect'],
+    '3422':         ['reg', 'mm', 'a4', 0, 8.7, 70, 34.95, 34.95, 70, 3, 3, 'rect'],
+    'LP24_70LS':    ['reg', 'mm', 'a4', 0, 12.5, 70, 34, 34, 70, 3, 3, 'rect'],
+    '3475':         ['reg', 'mm', 'a4', 0, 4.5, 70, 36, 36, 70, 3, 3, 'rect'],
+    'LP27_70S':     ['reg', 'mm', 'a4', 0, 4.725, 70, 31.95, 31.95, 70, 3, 3, 'rect'],
+    '3489':         ['reg', 'mm', 'a4', 0, 0, 70, 29.7, 29.7, 70, 3, 3, 'rect'],
+    '3421':         ['reg', 'mm', 'a4', 0, 8.8, 70, 25.4, 25.4, 70, 3, 3, 'rect'],
+    'L7409':        ['reg', 'mm', 'a4', 19.5, 21, 57, 15, 15, 57, 3, 3, 'rect'],
+    'LP56_52':      ['reg', 'mm', 'a4', 0, 0, 52.5, 21.21, 21.21, 52.5, 4, 4, 'rect'],
+
     # Round labels
     "LP35_37R":     ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle'],
 
@@ -185,6 +217,13 @@ class LabelGuides(inkex.Effect):
             action='store', type='float',
             dest='rrect_radius', default=1,
             help='Rectangle corner radius')
+
+        # RECTANGULAR PRESET OPTIONS
+        self.OptionParser.add_option(
+            '--rect_preset',
+            action='store', type='string',
+            dest='rect_preset', default='L7784',
+            help='Use the given square-corner rectangle template')
 
         # CUSTOM LABEL OPTIONS
         self.OptionParser.add_option(
@@ -488,8 +527,6 @@ class LabelGuides(inkex.Effect):
         size = label_opts['page_size']
         unit = label_opts['units']
 
-        inkex.errormsg(str(size))
-
         if size is not None:
             self.set_SVG_page_size(document, size[0], size[1], unit)
 
@@ -498,10 +535,7 @@ class LabelGuides(inkex.Effect):
         # Read in custom options
         preset_type = self.options.preset_tab.strip('"')
 
-        inkex.errormsg(preset_type)
-
         if preset_type == "custom":
-            inkex.errormsg("Custom!")
             # construct from parameters
             label_opts = self._read_custom_options()
         else:
@@ -510,6 +544,7 @@ class LabelGuides(inkex.Effect):
             # get the preset ID from the relevant enum entry
             preset_id = {
                     "rrect": self.options.rrect_preset,
+                    "rect": self.options.rect_preset,
             }[preset_type]
 
             label_opts = self._construct_preset_opts(preset_type, preset_id,
