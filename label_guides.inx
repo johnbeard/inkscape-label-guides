@@ -143,9 +143,11 @@
   <param name="delete_existing_guides" type="boolean" _gui-text="Delete existing guides">false</param>
   <param name="draw_edge_guides" type="boolean" _gui-text="Draw label edge guides">true</param>
   <param name="draw_centre_guides" type="boolean" _gui-text="Draw label centre guides">true</param>
-  <param name="inset" type="float"   min="0" max="1000" _gui-text="Guide inset">5</param>
+  <param name="inset" type="float" min="0" max="1000" _gui-text="Guide inset">5</param>
   <param name="draw_inset_guides" type="boolean" _gui-text="Draw label inset guides">true</param>
   <param name="draw_shapes" type="boolean" _gui-text="Draw label shapes">true</param>
+  <param name="shape_inset" type="float" min="0" max="1000" _gui-text="Shape inset">5</param>
+  <param name="draw_inset_shapes" type="boolean" _gui-text="Draw inset shapes">true</param>
   <param name="set_page_size" type="boolean" _gui-text="Set page size (presets only)">false</param>
   <effect>
     <object-type>all</object-type>

@@ -362,12 +362,22 @@ class LabelGuides(inkex.Effect):
             help='Draw label outline shapes')
 
         self.OptionParser.add_option(
+            '--shape_inset',
+            action='store', type='float',
+            dest='shape_inset', default=5,
+            help='Inset to use for inset shapes')
+
+        self.OptionParser.add_option(
+            '--draw_inset_shapes',
+            action='store', type='inkbool',
+            dest='draw_inset_shapes', default=True,
+            help='Draw shapes inset in the label outline')
+
+        self.OptionParser.add_option(
             '--set_page_size',
             action='store', type='inkbool',
             dest='set_page_size', default=True,
             help='Set page size (presets only)')
-
-        # TODO: Option Parsing
 
     def _to_uu(self, val, unit):
         """
@@ -393,33 +403,33 @@ class LabelGuides(inkex.Effect):
 
         svg.attrib['viewBox'] = "0 0 %f %f" % (new_uu_w, new_uu_h)
 
-    def _read_custom_options(self):
+    def _read_custom_options(self, options):
         """
         Read custom label geometry options and produce
         a dictionary of parameters for ingestion
         """
-        unit = self.options.units
+        unit = options.units
 
         custom_opts = {
-                'units': self.options.units,
+                'units': options.units,
                 'page_size': None,
                 'margin': {
-                    'l': self._to_uu(self.options.margin_l, unit),
-                    't': self._to_uu(self.options.margin_t, unit)
+                    'l': self._to_uu(options.margin_l, unit),
+                    't': self._to_uu(options.margin_t, unit)
                 },
                 'size': {
-                    'x': self._to_uu(self.options.size_x, unit),
-                    'y': self._to_uu(self.options.size_y, unit)
+                    'x': self._to_uu(options.size_x, unit),
+                    'y': self._to_uu(options.size_y, unit)
                 },
                 'pitch': {
-                    'x': self._to_uu(self.options.pitch_x, unit),
-                    'y': self._to_uu(self.options.pitch_y, unit)
+                    'x': self._to_uu(options.pitch_x, unit),
+                    'y': self._to_uu(options.pitch_y, unit)
                 },
                 'count': {
-                    'x': self.options.count_x,
-                    'y': self.options.count_y
+                    'x': options.count_x,
+                    'y': options.count_y
                 },
-                'shapes': self.options.shapes,
+                'shapes': options.shapes,
                 'corner_rad': None,
         }
 
@@ -519,6 +529,9 @@ class LabelGuides(inkex.Effect):
         """
         Draws label guides from a regular guide description object
         """
+        # convert to UU
+        inset = self._to_uu(inset, label_opts['units'])
+
         guides = self._get_regular_guides(label_opts, inset)
 
         # Get parent tag of the guides
@@ -547,7 +560,7 @@ class LabelGuides(inkex.Effect):
             pos = (guides['h'][g] + guides['h'][g + 1]) / 2
             add_SVG_guide(0, pos, GUIDE_ORIENT['horz'], colour, nv)
 
-    def _draw_shapes(self, document, label_opts):
+    def _draw_shapes(self, document, label_opts, inset):
         """
         Draw label shapes from a regular grid
         """
@@ -557,6 +570,8 @@ class LabelGuides(inkex.Effect):
                 'stroke-width': self._to_uu(1, "px"),
                 'fill': "none"
         }
+
+        inset = self._to_uu(inset, label_opts['units'])
 
         guides = self._get_regular_guides(label_opts, 0)
         shape = label_opts['shapes']
@@ -578,19 +593,19 @@ class LabelGuides(inkex.Effect):
                     cx = (guides['v'][xi] + guides['v'][xi + 1]) / 2
                     cy = (guides['h'][yi] + guides['h'][yi + 1]) / 2
 
-                    rx = cx - guides['v'][xi]
-                    ry = guides['h'][yi] - cy
+                    rx = cx - guides['v'][xi] - inset
+                    ry = guides['h'][yi] - cy - inset
 
                     draw_SVG_ellipse(rx, ry, cx, height - cy, style,
                                      shapeLayer)
 
                 elif shape in ["rect", "rrect"]:
 
-                    x = guides['v'][xi]
-                    w = guides['v'][xi + 1] - x
+                    x = guides['v'][xi] + inset
+                    w = guides['v'][xi + 1] - x - inset
 
-                    y = guides['h'][yi]
-                    h = y - guides['h'][yi + 1]
+                    y = guides['h'][yi] - inset
+                    h = y - guides['h'][yi + 1] - inset
 
                     rnd = self._to_uu(label_opts['corner_rad'],
                                       label_opts['units'])
@@ -606,19 +621,18 @@ class LabelGuides(inkex.Effect):
         unit = label_opts['units']
 
         if size is not None:
-            self.set_SVG_page_size(document, size[0], size[1], unit)
+            self._set_SVG_page_size(document, size[0], size[1], unit)
 
     def effect(self):
         """
         Perform the label template generation effect
         """
 
-        # Read in custom options
         preset_type = self.options.preset_tab.strip('"')
 
         if preset_type == "custom":
             # construct from parameters
-            label_opts = self._read_custom_options()
+            label_opts = self._read_custom_options(self.options)
         else:
             # construct from a preset
 
@@ -653,7 +667,11 @@ class LabelGuides(inkex.Effect):
                                     GUIDE_COLOURS['inset'])
 
         if self.options.draw_shapes:
-            self._draw_shapes(self.document, label_opts)
+            self._draw_shapes(self.document, label_opts, 0)
+
+        if self.options.draw_inset_shapes:
+            self._draw_shapes(self.document, label_opts,
+                              self.options.shape_inset)
 
 
 if __name__ == '__main__':
