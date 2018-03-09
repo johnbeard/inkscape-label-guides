@@ -106,7 +106,23 @@ PRESETS = {
     'LP56_52':      ['reg', 'mm', 'a4', 0, 0, 52.5, 21.21, 52.5, 21.21, 4, 14, 'rect'],
 
     # Round labels
-    "LP35_37R":     ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle'],
+    'LP2_115R':     ['reg', 'mm', 'a4', 47.75, 16.65, 114.5, 114.5, 114.5, 149.2, 1, 2, 'circle'],
+    'LP6_88R':      ['reg', 'mm', 'a4', 16, 14.5, 88, 88, 90, 90, 2, 3, 'circle'],
+    'LP6_85R':      ['reg', 'mm', 'a4', 17.5, 16, 85, 85, 90, 90, 2, 3, 'circle'],
+    'LP6_76R':      ['reg', 'mm', 'a4', 27, 31, 76, 76, 80, 79.5, 2, 3, 'circle'],
+    'C2244':        ['reg', 'mm', 'a4', 29.7, 33.9, 72, 72, 78.6, 78.6, 2, 3, 'circle'],
+    'LP8_69R':      ['reg', 'mm', 'a4', 34.5, 6, 69, 69, 72, 72, 2, 4, 'circle'],
+    'L7670':        ['reg', 'mm', 'a4', 5.25, 14.75, 63.5, 63.5, 68, 68, 3, 4, 'circle'],
+    'LP15_51R':     ['reg', 'mm', 'a4', 26.5, 17, 51, 51, 53, 53, 3, 5, 'circle'],
+    'LP24_45R':     ['reg', 'mm', 'a4', 9, 6, 45, 45, 49, 48, 4, 6, 'circle'],
+    'L7780':        ['reg', 'mm', 'a4', 16, 13.5, 40, 40, 46, 46, 4, 6, 'circle'],
+    'LP35_37R':     ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'circle'],
+    'LP35_35R':     ['reg', 'mm', 'a4', 9.5, 17, 35, 35, 39, 38, 5, 7, 'circle'],
+    'LP40_32R':     ['reg', 'mm', 'a4', 19, 10.35, 32, 32, 35, 34.9, 5, 8, 'circle'],
+    'LP54_29R':     ['reg', 'mm', 'a4', 8, 6, 29, 29, 33, 32, 6, 9, 'circle'],
+    'LP70_25R':     ['reg', 'mm', 'a4', 11.5, 14.5, 25, 25, 27, 27, 7, 10, 'circle'],
+    'LP117_19R':    ['reg', 'mm', 'a4', 11.5, 13, 19, 19, 21, 21, 9, 13, 'circle'],
+    'LP216_13R':    ['reg', 'mm', 'a4', 13.25, 10.25, 13, 13, 15.5, 15.5, 12, 18, 'circle'],
 
     # Square labels
     "LP35_37SQ":    ['reg', 'mm', 'a4', 8.5, 13, 37, 37, 39, 39, 5, 7, 'rrect'],
@@ -224,6 +240,13 @@ class LabelGuides(inkex.Effect):
             action='store', type='string',
             dest='rect_preset', default='L7784',
             help='Use the given square-corner rectangle template')
+
+        # CIRCULAR PRESET OPTIONS
+        self.OptionParser.add_option(
+            '--circ_preset',
+            action='store', type='string',
+            dest='circ_preset', default='LP2_115R',
+            help='Use the given circular template')
 
         # CUSTOM LABEL OPTIONS
         self.OptionParser.add_option(
@@ -545,6 +568,7 @@ class LabelGuides(inkex.Effect):
             preset_id = {
                     "rrect": self.options.rrect_preset,
                     "rect": self.options.rect_preset,
+                    "circ": self.options.circ_preset,
             }[preset_type]
 
             label_opts = self._construct_preset_opts(preset_type, preset_id,

@@ -87,6 +87,27 @@
         <_item value="LP56_52">52.5 x 21.21mm Labels (56/sheet, A4) [LP56/52]</_item>
       </param>
     </page>
+    <page name="circ" _gui-text="Preset (Circular)">
+      <param name="circ_preset" type="enum" _gui-text="Label preset:">
+        <_item value="LP2_115R">114.5mm Labels (2/sheet, A4) [LP2/115R]</_item>
+        <_item value="LP6_88R">88mm Labels (6/sheet, A4) [LP6/88R]</_item>
+        <_item value="LP6_85R">85mm Labels (6/sheet, A4) [LP6/85R]</_item>
+        <_item value="LP6_76R">76mm Labels (6/sheet, A4) [LP6/76R]</_item>
+        <_item value="C2244">72mm Labels (6/sheet, A4) [C2244, LP6/72R]</_item>
+        <_item value="LP8_69R">69mm Labels (8/sheet, A4) [LP8/69R]</_item>
+        <_item value="L7670">63.5mm Labels (12/sheet, A4) [L7670, LP12/64R]</_item>
+        <_item value="LP15_51R">51mm Labels (15/sheet, A4) [LP15/51R]</_item>
+        <_item value="LP24_45R">45mm Labels (24/sheet, A4) [LP24/45R]</_item>
+        <_item value="L7780">40mm Labels (24/sheet, A4) [L7780, LP24/40R]</_item>
+        <_item value="LP35_37R">37mm Labels (35/sheet, A4) [LP35/37R]</_item>
+        <_item value="LP35_35R">35mm Labels (35/sheet, A4) [LP35/35R]</_item>
+        <_item value="LP40_32R">32mm Labels (40/sheet, A4) [LP40/32R]</_item>
+        <_item value="LP54_29R">29mm Labels (54/sheet, A4) [LP54/29R]</_item>
+        <_item value="LP70_25R">25mm Labels (70/sheet, A4) [LP70/25R]</_item>
+        <_item value="LP117_19R">19mm Labels (117/sheet, A4) [LP117/19R]</_item>
+        <_item value="LP216_13R">13mm Labels (216/sheet, A4) [LP216/13R]</_item>
+      </param>
+    </page>
     <page name="custom" _gui-text="Custom">
       <param name="custom_hdr" type="description" appearance="header">Custom Label Options</param>
       <param name="margin_l"    type="float" min="0" max="1000" _gui-text="Left margin">8.5</param>

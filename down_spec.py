@@ -139,7 +139,7 @@ class SpecRipper(object):
 
     def _get_dim_from_text(self, txt):
 
-        return txt.replace("mm", "")
+        return txt.replace("mm", "").replace("(diameter)", "").strip()
 
     def _get_xy_template_spec(self, doc):
 
@@ -195,6 +195,8 @@ class InxFormatter(object):
 
         idcode = item['avery'] if item['avery'] else item['lpcode'].replace("/", "_")
 
+        size = " x ".join(item['size'])
+
         sheet = "A4"
 
         codes = []
@@ -208,10 +210,9 @@ class InxFormatter(object):
 
         desc = "Labels" if not item['desc'] else item['desc']
 
-        s = "<_item value=\"{code}\">{x} x {y}mm {desc} ({per}/sheet, {sheet}) [{allcodes}]</_item>".format(
+        s = "<_item value=\"{code}\">{size}mm {desc} ({per}/sheet, {sheet}) [{allcodes}]</_item>".format(
             code=idcode,
-            x=item['size'][0],
-            y=item['size'][1],
+            size=size,
             per=item['persheet'],
             sheet=sheet,
             allcodes=codes,
