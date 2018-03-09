@@ -28,6 +28,13 @@ GUIDE_ORIENT = {
         'horz': '0,1'
 }
 
+# Colours to use for the guides
+GUIDE_COLOURS = {
+        'edge': '#00A000',
+        'centre': '#A00000',
+        'inset': '#0000A0'
+}
+
 # Preset list
 # Regular grids defined as:
 #       'reg', unit, page_szie, l marg, t marg, X size, Y size,
@@ -140,7 +147,6 @@ PRESETS = {
     'LP15_51SQ':    ['reg', 'mm', 'a4', 26.6, 17.2, 51, 51, 52.9, 52.9, 3, 5, 'rrect'],
     'LP35_37SQ':    ['reg', 'mm', 'a4', 8.5 / 12, 13.3, 37, 37, 39, 38.9, 5, 7, 'rrect'],
     'LP70_25SQ':    ['reg', 'mm', 'a4', 11.5, 14.5, 25, 25, 27, 27, 7, 10, 'rrect'],
-
 }
 
 
@@ -318,6 +324,7 @@ class LabelGuides(inkex.Effect):
             dest='shapes', default='rect',
             help='Label shapes to draw')
 
+        # GENERAL DRAWING OPTIONS
         self.OptionParser.add_option(
             '--delete_existing_guides',
             action='store', type='inkbool',
@@ -329,6 +336,12 @@ class LabelGuides(inkex.Effect):
             action='store', type='inkbool',
             dest='draw_edge_guides', default=True,
             help='Draw guides at label edges')
+
+        self.OptionParser.add_option(
+            '--draw_centre_guides',
+            action='store', type='inkbool',
+            dest='draw_centre_guides', default=True,
+            help='Draw guides at label centres')
 
         self.OptionParser.add_option(
             '--inset',
@@ -357,9 +370,16 @@ class LabelGuides(inkex.Effect):
         # TODO: Option Parsing
 
     def _to_uu(self, val, unit):
+        """
+        Transform a value in given units to User Units
+        """
         return self.unittouu(str(val) + unit)
 
-    def set_SVG_page_size(self, document, x, y, unit):
+    def _set_SVG_page_size(self, document, x, y, unit):
+        """
+        Set the SVG page size to the given absolute size. The viewbox is
+        also rescaled as needed to maintain the scale factor.
+        """
 
         svg = document.getroot()
 
@@ -374,7 +394,8 @@ class LabelGuides(inkex.Effect):
         svg.attrib['viewBox'] = "0 0 %f %f" % (new_uu_w, new_uu_h)
 
     def _read_custom_options(self):
-        """Read custom label geometry options and produce
+        """
+        Read custom label geometry options and produce
         a dictionary of parameters for ingestion
         """
         unit = self.options.units
@@ -405,6 +426,10 @@ class LabelGuides(inkex.Effect):
         return custom_opts
 
     def _get_page_size(self, size):
+        """
+        Get a page size from a definition entry - can be in the form
+        [x, y], or a string (one of ['a4'])
+        """
 
         if isinstance(size, (list,)):
             # Explicit size
@@ -452,7 +477,8 @@ class LabelGuides(inkex.Effect):
         return opts
 
     def _get_regular_guides(self, label_opts, inset):
-        """Get the guides for a set of labels defined by a regular grid
+        """
+        Get the guides for a set of labels defined by a regular grid
 
         This is done so that irregular-grid presets can be defined if
         needed
@@ -490,16 +516,11 @@ class LabelGuides(inkex.Effect):
         return guides
 
     def _draw_label_guides(self, document, label_opts, inset, colour):
-        """Draws label guides from a regular guide description object
+        """
+        Draws label guides from a regular guide description object
         """
         guides = self._get_regular_guides(label_opts, inset)
 
-        self._draw_guides(document, guides, colour)
-
-    def _draw_guides(self, document, guides, colour):
-        """
-        Draw guides from a generic list of h/v guides
-        """
         # Get parent tag of the guides
         nv = self.getNamedView()
 
@@ -509,6 +530,22 @@ class LabelGuides(inkex.Effect):
 
         for g in guides['h']:
             add_SVG_guide(0, g, GUIDE_ORIENT['horz'], colour, nv)
+
+    def _draw_centre_guides(self, document, label_opts, colour):
+        """
+        Draw guides in the centre of labels defined by the given options
+        """
+
+        guides = self._get_regular_guides(label_opts, 0)
+        nv = self.getNamedView()
+
+        for g in range(0, len(guides['v']), 2):
+            pos = (guides['v'][g] + guides['v'][g + 1]) / 2
+            add_SVG_guide(pos, 0, GUIDE_ORIENT['vert'], colour, nv)
+
+        for g in range(0, len(guides['h']), 2):
+            pos = (guides['h'][g] + guides['h'][g + 1]) / 2
+            add_SVG_guide(0, pos, GUIDE_ORIENT['horz'], colour, nv)
 
     def _draw_shapes(self, document, label_opts):
         """
@@ -561,6 +598,9 @@ class LabelGuides(inkex.Effect):
                     draw_SVG_rect(x, height - y, w, h, rnd, style, shapeLayer)
 
     def _set_page_size(self, document, label_opts):
+        """
+        Set the SVG page size from the given label template definition
+        """
 
         size = label_opts['page_size']
         unit = label_opts['units']
@@ -569,6 +609,9 @@ class LabelGuides(inkex.Effect):
             self.set_SVG_page_size(document, size[0], size[1], unit)
 
     def effect(self):
+        """
+        Perform the label template generation effect
+        """
 
         # Read in custom options
         preset_type = self.options.preset_tab.strip('"')
@@ -597,11 +640,17 @@ class LabelGuides(inkex.Effect):
             self._set_page_size(self.document, label_opts)
 
         if self.options.draw_edge_guides:
-            self._draw_label_guides(self.document, label_opts, 0, "#00A000")
+            self._draw_label_guides(self.document, label_opts, 0,
+                                    GUIDE_COLOURS['edge'])
+
+        if self._draw_centre_guides:
+            self._draw_centre_guides(self.document, label_opts,
+                                     GUIDE_COLOURS['centre'])
 
         if self.options.draw_inset_guides and self.options.inset > 0.0:
             self._draw_label_guides(self.document, label_opts,
-                                    self.options.inset, None)
+                                    self.options.inset,
+                                    GUIDE_COLOURS['inset'])
 
         if self.options.draw_shapes:
             self._draw_shapes(self.document, label_opts)

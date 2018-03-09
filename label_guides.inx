@@ -142,6 +142,7 @@
   <param name="drawing_opts_hdr" type="description" appearance="header">Drawing Options</param>
   <param name="delete_existing_guides" type="boolean" _gui-text="Delete existing guides">false</param>
   <param name="draw_edge_guides" type="boolean" _gui-text="Draw label edge guides">true</param>
+  <param name="draw_centre_guides" type="boolean" _gui-text="Draw label centre guides">true</param>
   <param name="inset" type="float"   min="0" max="1000" _gui-text="Guide inset">5</param>
   <param name="draw_inset_guides" type="boolean" _gui-text="Draw label inset guides">true</param>
   <param name="draw_shapes" type="boolean" _gui-text="Draw label shapes">true</param>
