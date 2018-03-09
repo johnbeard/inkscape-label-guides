@@ -87,7 +87,7 @@
         <_item value="LP56_52">52.5 x 21.21mm Labels (56/sheet, A4) [LP56/52]</_item>
       </param>
     </page>
-    <page name="circ" _gui-text="Preset (Circular)">
+    <page name="circ" _gui-text="Preset (Round &amp; Oval)">
       <param name="circ_preset" type="enum" _gui-text="Label preset:">
         <_item value="LP2_115R">114.5mm Labels (2/sheet, A4) [LP2/115R]</_item>
         <_item value="LP6_88R">88mm Labels (6/sheet, A4) [LP6/88R]</_item>
@@ -106,6 +106,15 @@
         <_item value="LP70_25R">25mm Labels (70/sheet, A4) [LP70/25R]</_item>
         <_item value="LP117_19R">19mm Labels (117/sheet, A4) [LP117/19R]</_item>
         <_item value="LP216_13R">13mm Labels (216/sheet, A4) [LP216/13R]</_item>
+
+        <_item value="LP2_195OV">195 x 138mm Labels (2/sheet, A4) [LP2/195OV]</_item>
+        <_item value="LP4_90OV">90 x 135mm Labels (4/sheet, A4) [LP4/90OV]</_item>
+        <_item value="LP8_90OV">90 x 62mm Labels (8/sheet, A4) [LP8/90OV]</_item>
+        <_item value="LP10_95OV">95 x 53mm Labels (10/sheet, A4) [LP10/95OV]</_item>
+        <_item value="LP14_95OV">95 x 34mm Labels (14/sheet, A4) [LP14/95OV]</_item>
+        <_item value="LP21_60OV">60 x 34mm Labels (21/sheet, A4) [LP21/60OV]</_item>
+        <_item value="LP32_40OV">40 x 30mm Labels (32/sheet, A4) [LP32/40OV]</_item>
+        <_item value="LP65_35OV">35.05 x 16mm Labels (65/sheet, A4) [LP65/35OV]</_item>
       </param>
     </page>
     <page name="custom" _gui-text="Custom">
