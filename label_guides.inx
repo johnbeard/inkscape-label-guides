@@ -50,6 +50,12 @@
         <_item value="L7656">46 x 11.1mm Labels (84/sheet, A4) [L7656, LP84/46]</_item>
         <_item value="L7658">25.4 x 10mm Labels (189/sheet, A4) [L7658, LP189/25]</_item>
         <_item value="L7657">17.8 x 10mm Labels (270/sheet, A4) [L7657, LP270/18]</_item>
+
+        <_item value="LP6_95SQ">95 x 95mm Labels (6/sheet, A4) [LP6/95SQ]</_item>
+        <_item value="LP12_65SQ">65 x 65mm Labels (12/sheet, A4) [LP12/65SQ]</_item>
+        <_item value="LP15_51SQ">51 x 51mm Labels (15/sheet, A4) [LP15/51SQ]</_item>
+        <_item value="LP35_37SQ">37 x 37mm Labels (35/sheet, A4) [LP35/37SQ]</_item>
+        <_item value="LP70_25SQ">25 x 25mm Labels (70/sheet, A4) [LP70/25SQ]</_item>
       </param>
       <param name="rrect_radius" type="float" min="0" max="100" _gui-text="Corner Radius">1</param>
     </page>

@@ -76,7 +76,7 @@ class FormatFinder(object):
         shape = {
                 "rectangular-rounded-corners": "rrect",
                 "rectangular-square-corners": "rect",
-                "square": "square",
+                "square": "rrect",
                 "round": "circle",
                 "oval": "circle"
                 }[list_page]
