@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Simple download tool for scraping LabelPlanet.co.uk pages for label
+template specifications. Can output the descriptions for use in an INX file
+enum, as well as the definitions for use in the label_guides.py enxtension's
+database.
 
+Licenced under the GNU General Public License v2.0
+"""
 
 from lxml.html import fromstring
 import requests
@@ -252,7 +259,9 @@ class SpecFormatter(object):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Download label specs.')
+    parser = argparse.ArgumentParser(
+            description='Download label template specifications from '
+                        'LabelPlanet.co.uk')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='verbose mode')
     parser.add_argument('-t', '--type', action='store', required=True,
