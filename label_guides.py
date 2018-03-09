@@ -389,6 +389,21 @@ class LabelGuides(inkex.Effect):
         """
         return self.unittouu(str(val) + unit)
 
+    def _get_page_size(self, size):
+        """
+        Get a page size from a definition entry - can be in the form
+        [x, y], or a string (one of ['a4'])
+        """
+
+        if isinstance(size, (list,)):
+            # Explicit size
+            return size
+        elif size == "a4":
+            return [210, 297]
+
+        # Failed to find a useful size, None will inhibit setting the size
+        return None
+
     def _set_SVG_page_size(self, document, x, y, unit):
         """
         Set the SVG page size to the given absolute size. The viewbox is
@@ -438,21 +453,6 @@ class LabelGuides(inkex.Effect):
         }
 
         return custom_opts
-
-    def _get_page_size(self, size):
-        """
-        Get a page size from a definition entry - can be in the form
-        [x, y], or a string (one of ['a4'])
-        """
-
-        if isinstance(size, (list,)):
-            # Explicit size
-            return size
-        elif size == "a4":
-            return [210, 297]
-
-        # Failed to find a useful size, None will inhibit setting the size
-        return None
 
     def _construct_preset_opts(self, preset_type, preset_id, options):
         """Construct an options object for a preset label template
