@@ -153,8 +153,8 @@ class SpecRipper(object):
                 (5, 3, 'count_y', 'int'),
                 (1, 5, 'margin_t', 'dim'),
                 (3, 5, 'margin_l', 'dim'),
-                (1, 7, 'pitch_x', 'dim'),
-                (2, 7, 'pitch_y', 'dim'),
+                (2, 7, 'pitch_x', 'dim'),
+                (1, 7, 'pitch_y', 'dim'),
         ]
 
         spec = {}
@@ -242,7 +242,7 @@ class SpecFormatter(object):
                 px=layout['pitch_x'],
                 py=layout['pitch_y'],
                 nx=layout['count_x'],
-                ny=layout['count_x'],
+                ny=layout['count_y'],
                 shape=item['shape'],
             )
 
