@@ -254,6 +254,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Download label specs.')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='verbose mode')
+    parser.add_argument('-t', '--type', action='store', required=True,
+                        choices=['rrect', 'rect', 'circ', 'oval', 'square'],
+                        help='label type')
     parser.add_argument('--inx', action='store_true',
                         help='print INX items')
     parser.add_argument('--spec', action='store_true',
@@ -264,11 +267,20 @@ if __name__ == "__main__":
     # avoid re-downloading pages
     requests_cache.install_cache('demo_cache')
 
+    # convert type
+    label_type = {
+            'rrect': 'rectangular-rounded-corners',
+            'rect': 'rectangular-square-corners',
+            'circ': 'round',
+            'oval': 'oval',
+            'square': 'square'
+    }[args.type]
+
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG)
 
     ff = FormatFinder()
-    spec_list = ff.get_list("rectangular-rounded-corners")
+    spec_list = ff.get_list(label_type)
 
     logging.debug("Got list of specs: ")
     logging.debug(pformat(spec_list))
