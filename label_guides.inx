@@ -5,64 +5,70 @@
   <dependency type="executable" location="extensions">label_guides.py</dependency>
   <dependency type="executable" location="extensions">inkex.py</dependency>
 
-  <param name="label_preset" type="enum" appearance="minimal" _gui-text="Label preset:">
-    <_item value="custom">Custom...</_item>
-    <_item value="L7167">199.6 x 289.1mm Labels (1/sheet, A4) [L7167, LP1/199]</_item>
-    <_item value="L7168">199.6 x 143.5mm Labels (2/sheet, A4) [L7168, LP2/199]</_item>
-    <_item value="L7169">99.1 x 139mm Labels (4/sheet, A4) [L7169, LP4/99]</_item>
-    <_item value="L7701">192 x 62mm Lever Arch File Labels (4/sheet, A4) [L7701, LP4/192]</_item>
-    <_item value="L7171">200 x 60mm Lever Arch File Labels (4/sheet, A4) [L7171, LP4/200]</_item>
-    <_item value="L7166">99.1 x 93.1mm Labels (6/sheet, A4) [L7166, LP6/99]</_item>
-    <_item value="L4760">192 x 39mm Lever Arch File Labels (7/sheet, A4) [L4760, LP7/192]</_item>
-    <_item value="L7165">99.1 x 67.7mm Labels (8/sheet, A4) [L7165, LP8/99]</_item>
-    <_item value="L7664">70 x 71.8mm Diskette Labels (8/sheet, A4) [L7664, LP8/71]</_item>
-    <_item value="L7667">133 x 29.6mm Data Cartridge Labels (9/sheet, A4) [L7667, LP9/133]</_item>
-    <_item value="L7173">99.1 x 57mm Labels (10/sheet, A4) [L7173, LP10/99]</_item>
-    <_item value="J5103">38.1 x 135mm Smartstamp “Logo” Labels (10/sheet, A4) [J5103, LP10/38]</_item>
-    <_item value="L7666">70 x 52mm Labels (10/sheet, A4) [L7666, LP10/70]</_item>
-    <_item value="L7783">95.8 x 50.7mm Labels (10/sheet, A4) [L7783, LP10/96]</_item>
-    <_item value="L7164">63.5 x 72mm Labels (12/sheet, A4) [L7164, LP12/63]</_item>
-    <_item value="L7671">76.2 x 46.4mm Labels (12/sheet, A4) [L7671, LP12/76]</_item>
-    <_item value="L7177">99.1 x 42.3mm Labels (12/sheet, A4) [L7177, LP12/99]</_item>
-    <_item value="L7163">99.1 x 38.1mm Labels (14/sheet, A4) [L7163, LP14/99]</_item>
-    <_item value="L7668">59 x 50.9mm Labels (15/sheet, A4) [L7668, LP15/59]</_item>
-    <_item value="L7162">99.1 x 33.9mm Labels (16/sheet, A4) [L7162, LP16/99]</_item>
-    <_item value="L7674">145 x 17mm Labels (16/sheet, A4) [L7674, LP16/145]</_item>
-    <_item value="L7161">63.5 x 46.6mm Labels (18/sheet, A4) [L7161, LP18/63]</_item>
-    <_item value="L7172">100 x 30mm Labels (18/sheet, A4) [L7172, LP18/100]</_item>
-    <_item value="J5101">38.1 x 69mm Smartstamp “Bulk Print” Labels (20/sheet, A4) [J5101, LP20/38]</_item>
-    <_item value="L7160">63.5 x 38.1mm Labels (21/sheet, A4) [L7160, LP21/63]</_item>
-    <_item value="L7159">63.5 x 33.9mm Labels (24/sheet, A4) [L7159, LP24/63]</_item>
-    <_item value="L7665">72 x 21.15mm Labels (24/sheet, A4) [L7665, LP24/72]</_item>
-    <_item value="L7170">134 x 11mm Eurofolio Labels (24/sheet, A4) [L7170, LP24/134]</_item>
-    <_item value="L6011">63.5 x 29.6mm Labels (27/sheet, A4) [L6011, LP27/63]</_item>
-    <_item value="LP33_53">54 x 22mm Labels (33/sheet, A4) [LP33/53]</_item>
-    <_item value="LP36_49">48.9 x 29.6mm Labels (36/sheet, A4) [LP36/49]</_item>
-    <_item value="L7654">45.7 x 25.4mm Labels (40/sheet, A4) [L7654, LP40/45]</_item>
-    <_item value="L7636">45.7 x 21.2mm Labels (48/sheet, A4) [L7636, LP48/45]</_item>
-    <_item value="LP56_89">89 x 10mm Labels (56/sheet, A4) [LP56/89]</_item>
-    <_item value="L7651">38.1 x 21.2mm Labels (65/sheet, A4) [L7651, LP65/38]</_item>
-    <_item value="L7656">46 x 11.1mm Labels (84/sheet, A4) [L7656, LP84/46]</_item>
-    <_item value="L7658">25.4 x 10mm Labels (189/sheet, A4) [L7658, LP189/25]</_item>
-    <_item value="L7657">17.8 x 10mm Labels (270/sheet, A4) [L7657, LP270/18]</_item>
+  <param name="units" type="enum" _gui-text="Units:">
+    <_item value="mm">mm</_item>
+    <_item value="in">inch</_item>
   </param>
-  <param name="custom_hdr" type="description" appearance="header">Custom Label Options</param>
-  <param name="units" type="enum" appearance="minimal" _gui-text="Custom label units:">
-      <_item value="mm">mm</_item>
-      <_item value="in">inch</_item>
-  </param>
-  <param name="margin_l"    type="float" min="0" max="1000" _gui-text="Left margin">8.5</param>
-  <param name="margin_t"    type="float" min="0" max="1000" _gui-text="Top margin">13></param>
-  <param name="size_x"      type="float" min="0" max="1000" _gui-text="Label X size">37</param>
-  <param name="size_y"      type="float" min="0" max="1000" _gui-text="Label Y size">37</param>
-  <param name="pitch_x"     type="float" min="0" max="1000" _gui-text="Label X pitch">39</param>
-  <param name="pitch_y"     type="float" min="0" max="1000" _gui-text="Label Y pitch">39</param>
-  <param name="count_x"     type="int"   min="0" max="1000" _gui-text="Number Across">5</param>
-  <param name="count_y"     type="int"   min="0" max="1000" _gui-text="Number Down">7</param>
-  <param name="shapes" type="enum" appearance="minimal" _gui-text="Label Shapes:">
-    <_item value="rect">Rectangle</_item>
-    <_item value="circle">Circle/Ellipse</_item>
-  </param>
+  <param name="preset_tab" type="notebook">
+    <page name="rrect" _gui-text="Preset (Rounded Rect.)">
+      <param name="rrect_preset" type="enum" appearance="minimal" _gui-text="Label preset:">
+        <_item value="L7167">199.6 x 289.1mm Labels (1/sheet, A4) [L7167, LP1/199]</_item>
+        <_item value="L7168">199.6 x 143.5mm Labels (2/sheet, A4) [L7168, LP2/199]</_item>
+        <_item value="L7169">99.1 x 139mm Labels (4/sheet, A4) [L7169, LP4/99]</_item>
+        <_item value="L7701">192 x 62mm Lever Arch File Labels (4/sheet, A4) [L7701, LP4/192]</_item>
+        <_item value="L7171">200 x 60mm Lever Arch File Labels (4/sheet, A4) [L7171, LP4/200]</_item>
+        <_item value="L7166">99.1 x 93.1mm Labels (6/sheet, A4) [L7166, LP6/99]</_item>
+        <_item value="L4760">192 x 39mm Lever Arch File Labels (7/sheet, A4) [L4760, LP7/192]</_item>
+        <_item value="L7165">99.1 x 67.7mm Labels (8/sheet, A4) [L7165, LP8/99]</_item>
+        <_item value="L7664">70 x 71.8mm Diskette Labels (8/sheet, A4) [L7664, LP8/71]</_item>
+        <_item value="L7667">133 x 29.6mm Data Cartridge Labels (9/sheet, A4) [L7667, LP9/133]</_item>
+        <_item value="L7173">99.1 x 57mm Labels (10/sheet, A4) [L7173, LP10/99]</_item>
+        <_item value="J5103">38.1 x 135mm Smartstamp “Logo” Labels (10/sheet, A4) [J5103, LP10/38]</_item>
+        <_item value="L7666">70 x 52mm Labels (10/sheet, A4) [L7666, LP10/70]</_item>
+        <_item value="L7783">95.8 x 50.7mm Labels (10/sheet, A4) [L7783, LP10/96]</_item>
+        <_item value="L7164">63.5 x 72mm Labels (12/sheet, A4) [L7164, LP12/63]</_item>
+        <_item value="L7671">76.2 x 46.4mm Labels (12/sheet, A4) [L7671, LP12/76]</_item>
+        <_item value="L7177">99.1 x 42.3mm Labels (12/sheet, A4) [L7177, LP12/99]</_item>
+        <_item value="L7163">99.1 x 38.1mm Labels (14/sheet, A4) [L7163, LP14/99]</_item>
+        <_item value="L7668">59 x 50.9mm Labels (15/sheet, A4) [L7668, LP15/59]</_item>
+        <_item value="L7162">99.1 x 33.9mm Labels (16/sheet, A4) [L7162, LP16/99]</_item>
+        <_item value="L7674">145 x 17mm Labels (16/sheet, A4) [L7674, LP16/145]</_item>
+        <_item value="L7161">63.5 x 46.6mm Labels (18/sheet, A4) [L7161, LP18/63]</_item>
+        <_item value="L7172">100 x 30mm Labels (18/sheet, A4) [L7172, LP18/100]</_item>
+        <_item value="J5101">38.1 x 69mm Smartstamp “Bulk Print” Labels (20/sheet, A4) [J5101, LP20/38]</_item>
+        <_item value="L7160">63.5 x 38.1mm Labels (21/sheet, A4) [L7160, LP21/63]</_item>
+        <_item value="L7159">63.5 x 33.9mm Labels (24/sheet, A4) [L7159, LP24/63]</_item>
+        <_item value="L7665">72 x 21.15mm Labels (24/sheet, A4) [L7665, LP24/72]</_item>
+        <_item value="L7170">134 x 11mm Eurofolio Labels (24/sheet, A4) [L7170, LP24/134]</_item>
+        <_item value="L6011">63.5 x 29.6mm Labels (27/sheet, A4) [L6011, LP27/63]</_item>
+        <_item value="LP33_53">54 x 22mm Labels (33/sheet, A4) [LP33/53]</_item>
+        <_item value="LP36_49">48.9 x 29.6mm Labels (36/sheet, A4) [LP36/49]</_item>
+        <_item value="L7654">45.7 x 25.4mm Labels (40/sheet, A4) [L7654, LP40/45]</_item>
+        <_item value="L7636">45.7 x 21.2mm Labels (48/sheet, A4) [L7636, LP48/45]</_item>
+        <_item value="LP56_89">89 x 10mm Labels (56/sheet, A4) [LP56/89]</_item>
+        <_item value="L7651">38.1 x 21.2mm Labels (65/sheet, A4) [L7651, LP65/38]</_item>
+        <_item value="L7656">46 x 11.1mm Labels (84/sheet, A4) [L7656, LP84/46]</_item>
+        <_item value="L7658">25.4 x 10mm Labels (189/sheet, A4) [L7658, LP189/25]</_item>
+        <_item value="L7657">17.8 x 10mm Labels (270/sheet, A4) [L7657, LP270/18]</_item>
+      </param>
+      <param name="rrect_radius" type="float" min="0" max="100" _gui-text="Corner Radius">1</param>
+    </page>
+    <page name="custom" _gui-text="Custom">
+      <param name="custom_hdr" type="description" appearance="header">Custom Label Options</param>
+      <param name="margin_l"    type="float" min="0" max="1000" _gui-text="Left margin">8.5</param>
+      <param name="margin_t"    type="float" min="0" max="1000" _gui-text="Top margin">13></param>
+      <param name="size_x"      type="float" min="0" max="1000" _gui-text="Label X size">37</param>
+      <param name="size_y"      type="float" min="0" max="1000" _gui-text="Label Y size">37</param>
+      <param name="pitch_x"     type="float" min="0" max="1000" _gui-text="Label X pitch">39</param>
+      <param name="pitch_y"     type="float" min="0" max="1000" _gui-text="Label Y pitch">39</param>
+      <param name="count_x"     type="int"   min="0" max="1000" _gui-text="Number Across">5</param>
+      <param name="count_y"     type="int"   min="0" max="1000" _gui-text="Number Down">7</param>
+      <param name="shapes" type="enum" appearance="minimal" _gui-text="Label Shapes:">
+        <_item value="rect">Rectangle</_item>
+        <_item value="circle">Circle/Ellipse</_item>
+      </param>
+    </page>
+ </param>
   <param name="drawing_opts_hdr" type="description" appearance="header">Drawing Options</param>
   <param name="delete_existing_guides" type="boolean" _gui-text="Delete existing guides">false</param>
   <param name="draw_edge_guides" type="boolean" _gui-text="Draw label edge guides">true</param>

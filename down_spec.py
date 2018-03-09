@@ -231,7 +231,8 @@ class SpecFormatter(object):
 
         layout = item['layout']
 
-        s = "{idcode:16}['reg', 'mm', '{sheet}', {ml}, {mt}, {sx}, {sy}, {px}, {py}, {nx}, {ny}, '{shape}']".format(
+        s = "{indent}{idcode:16}['reg', 'mm', '{sheet}', {ml}, {mt}, {sx}, {sy}, {px}, {py}, {nx}, {ny}, '{shape}'],".format(
+                indent=" " * 4,
                 idcode="'{}':".format(idcode),
                 sheet=sheet,
                 ml=layout['margin_l'],
