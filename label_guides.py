@@ -23,11 +23,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 import inkex
 import simplestyle
 
-GUIDE_ORIENT = {
-        'vert': '1,0',
-        'horz': '0,1'
-}
-
 # Colours to use for the guides
 GUIDE_COLOURS = {
         'edge': '#00A000',
@@ -153,6 +148,15 @@ PRESETS = {
 def add_SVG_guide(x, y, orientation, colour, parent):
     """ Create a sodipodi:guide node on the given parent
     """
+
+    try:
+        # convert mnemonics to actual orientations
+        orientation = {
+                'vert': '1,0',
+                'horz': '0,1'
+        }[orientation]
+    except KeyError:
+        pass
 
     attribs = {
             'position': str(x) + "," + str(y),
@@ -539,10 +543,10 @@ class LabelGuides(inkex.Effect):
 
         # Draw vertical guides
         for g in guides['v']:
-            add_SVG_guide(g, 0, GUIDE_ORIENT['vert'], colour, nv)
+            add_SVG_guide(g, 0, 'vert', colour, nv)
 
         for g in guides['h']:
-            add_SVG_guide(0, g, GUIDE_ORIENT['horz'], colour, nv)
+            add_SVG_guide(0, g, 'horz', colour, nv)
 
     def _draw_centre_guides(self, document, label_opts, colour):
         """
@@ -554,11 +558,11 @@ class LabelGuides(inkex.Effect):
 
         for g in range(0, len(guides['v']), 2):
             pos = (guides['v'][g] + guides['v'][g + 1]) / 2
-            add_SVG_guide(pos, 0, GUIDE_ORIENT['vert'], colour, nv)
+            add_SVG_guide(pos, 0, 'vert', colour, nv)
 
         for g in range(0, len(guides['h']), 2):
             pos = (guides['h'][g] + guides['h'][g + 1]) / 2
-            add_SVG_guide(0, pos, GUIDE_ORIENT['horz'], colour, nv)
+            add_SVG_guide(0, pos, 'horz', colour, nv)
 
     def _draw_shapes(self, document, label_opts, inset):
         """
