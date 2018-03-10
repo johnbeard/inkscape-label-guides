@@ -10,13 +10,12 @@ SRC_FILES=label_guides.py label_guides.inx
 $(ZIP): $(SRC_FILES)
 	zip -r $(ZIP) $(SRC_FILES)
 
-.PHONY: clean all install
+.PHONY: clean zip install
 
 clean:
 	rm -f $(NAME)-*.zip
 
-all:
-	$(ZIP)
+zip: $(ZIP)
 
 install:
 	mkdir -p $(DESTDIR)
