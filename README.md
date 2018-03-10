@@ -43,3 +43,7 @@ or
 
     make install DESTDIR=/path/to/install/directory
 
+### Arch Linux
+
+There is an AUR package called
+[`inkscape-label-guides`](https://aur.archlinux.org/packages/inkscape-label-guides/).
