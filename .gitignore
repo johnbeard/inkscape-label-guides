@@ -2,3 +2,6 @@
 
 # download cache
 *.sqlite
+
+# packaged ZIP files
+*.zip

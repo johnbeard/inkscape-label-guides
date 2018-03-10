@@ -32,6 +32,14 @@ Inkscape extension directory.
 On Linux, this is `~/.config/inkscape/extensions` for user extensions or
 `/usr/share/inkscape/extensions` for system extensions.
 
-### Arch Linux
+### Makefile
 
-There is an AUR package available to install this extension.
+You can clone this repository and use `make` to install the extension to
+your user extension directory (Linux only, maybe OSX):
+
+    make install
+
+or
+
+    make install DESTDIR=/path/to/install/directory
+
