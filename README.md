@@ -3,6 +3,9 @@
 This is an extension to draw guides and outline for printable label sheets.
 There is a fairly large range of labels, mostly from LabelPlanet and Avery.
 
+The InkSpace extension page is
+[here](https://inkscape.org/en/~jjbeard/%E2%98%85label-guides).
+
 This is what the output can look like:
 
 ![labels_output_demo](doc/label_output_demo.png)
