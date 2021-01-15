@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 '''
 Label Guides Creator
 
@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
 import inkex
-import simplestyle
+from lxml import etree
 
 # Colours to use for the guides
 GUIDE_COLOURS = {
@@ -166,7 +166,7 @@ def add_SVG_guide(x, y, orientation, colour, parent):
     if colour is not None:
         attribs[inkex.addNS('color', 'inkscape')] = colour
 
-    inkex.etree.SubElement(
+    etree.SubElement(
             parent,
             inkex.addNS('guide', 'sodipodi'),
             attribs)
@@ -189,7 +189,7 @@ def delete_all_guides(document):
 def draw_SVG_ellipse(rx, ry, cx, cy, style, parent):
 
     attribs = {
-        'style': simplestyle.formatStyle(style),
+        'style': str(inkex.Style(style)),
         inkex.addNS('cx', 'sodipodi'):   str(cx),
         inkex.addNS('cy', 'sodipodi'):   str(cy),
         inkex.addNS('rx', 'sodipodi'):   str(rx),
@@ -197,13 +197,13 @@ def draw_SVG_ellipse(rx, ry, cx, cy, style, parent):
         inkex.addNS('type', 'sodipodi'): 'arc',
     }
 
-    inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), attribs)
+    etree.SubElement(parent, inkex.addNS('path', 'svg'), attribs)
 
 
 def draw_SVG_rect(x, y, w, h, round, style, parent):
 
     attribs = {
-        'style':    simplestyle.formatStyle(style),
+        'style':    str(inkex.Style(style)),
         'height':   str(h),
         'width':    str(w),
         'x':        str(x),
@@ -213,12 +213,12 @@ def draw_SVG_rect(x, y, w, h, round, style, parent):
     if round:
         attribs['ry'] = str(round)
 
-    inkex.etree.SubElement(parent, inkex.addNS('rect', 'svg'), attribs)
+    etree.SubElement(parent, inkex.addNS('rect', 'svg'), attribs)
 
 
 def add_SVG_layer(parent, gid, label):
 
-    layer = inkex.etree.SubElement(parent, 'g', {
+    layer = etree.SubElement(parent, 'g', {
         'id': gid,
         inkex.addNS('groupmode', 'inkscape'): 'layer',
         inkex.addNS('label', 'inkscape'): label
@@ -232,162 +232,44 @@ class LabelGuides(inkex.Effect):
     def __init__(self):
 
         inkex.Effect.__init__(self)
-
-        self.OptionParser.add_option(
-            '--units',
-            action='store', type='string',
-            dest='units', default="mm",
-            help='The units to use for custom label sizing')
-
-        self.OptionParser.add_option(
-            '--preset_tab',
-            action='store', type='string',
-            dest='preset_tab', default='rrect',
-            help='The preset section that is selected'
-                 ' (other sections will be ignored)')
-
+        self.arg_parser.add_argument('--units', default="mm", help='The units to use for custom label sizing')
+        self.arg_parser.add_argument('--preset_tab', default='rrect', help='The preset section that is selected (other sections will be ignored)')
+        
         # ROUNDED RECTANGLE PRESET OPTIONS
-        self.OptionParser.add_option(
-            '--rrect_preset',
-            action='store', type='string',
-            dest='rrect_preset', default='L7167',
-            help='Use the given rounded rectangle preset template')
-
-        self.OptionParser.add_option(
-            '--rrect_radius',
-            action='store', type='float',
-            dest='rrect_radius', default=1,
-            help='Rectangle corner radius')
-
-        # RECTANGULAR PRESET OPTIONS
-        self.OptionParser.add_option(
-            '--rect_preset',
-            action='store', type='string',
-            dest='rect_preset', default='L7784',
-            help='Use the given square-corner rectangle template')
-
+        self.arg_parser.add_argument('--rrect_preset', default='L7167', help='Use the given rounded rectangle preset template')
+        self.arg_parser.add_argument('--rrect_radius', type=float, default=1, help='Rectangle corner radius') # RECTANGULAR PRESET OPTIONS
+        self.arg_parser.add_argument('--rect_preset', default='L7784', help='Use the given square-corner rectangle template')
+        
         # CIRCULAR PRESET OPTIONS
-        self.OptionParser.add_option(
-            '--circ_preset',
-            action='store', type='string',
-            dest='circ_preset', default='LP2_115R',
-            help='Use the given circular template')
-
+        self.arg_parser.add_argument('--circ_preset', default='LP2_115R', help='Use the given circular template')
+        
         # CUSTOM LABEL OPTIONS
-        self.OptionParser.add_option(
-            '--margin_l',
-            action='store', type='float',
-            dest='margin_l', default=8.5,
-            help='Left page margin')
-
-        self.OptionParser.add_option(
-            '--margin_t',
-            action='store', type='float',
-            dest='margin_t', default=13,
-            help='Top page margin')
-
-        self.OptionParser.add_option(
-            '--size_x',
-            action='store', type='float',
-            dest='size_x', default=37,
-            help='Label X size')
-
-        self.OptionParser.add_option(
-            '--size_y',
-            action='store', type='float',
-            dest='size_y', default=37,
-            help='Label Y size')
-
-        self.OptionParser.add_option(
-            '--pitch_x',
-            action='store', type='float',
-            dest='pitch_x', default=39,
-            help='Label X pitch')
-
-        self.OptionParser.add_option(
-            '--pitch_y',
-            action='store', type='float',
-            dest='pitch_y', default=39,
-            help='Label Y pitch')
-
-        self.OptionParser.add_option(
-            '--count_x',
-            action='store', type='int',
-            dest='count_x', default=5,
-            help='Number of labels across')
-
-        self.OptionParser.add_option(
-            '--count_y',
-            action='store', type='int',
-            dest='count_y', default=7,
-            help='Number of labels down')
-
-        self.OptionParser.add_option(
-            '--shapes',
-            action='store', type='string',
-            dest='shapes', default='rect',
-            help='Label shapes to draw')
-
+        self.arg_parser.add_argument('--margin_l', type=float, default=8.5, help='Left page margin')
+        self.arg_parser.add_argument('--margin_t', type=float, default=13, help='Top page margin')
+        self.arg_parser.add_argument('--size_x', type=float, default=37, help='Label X size')
+        self.arg_parser.add_argument('--size_y', type=float, default=37, help='Label Y size')
+        self.arg_parser.add_argument('--pitch_x', type=float, default=39, help='Label X pitch')
+        self.arg_parser.add_argument('--pitch_y', type=float, default=39, help='Label Y pitch')
+        self.arg_parser.add_argument('--count_x', type=int,  default=5, help='Number of labels across')
+        self.arg_parser.add_argument('--count_y', type=int, default=7, help='Number of labels down')
+        self.arg_parser.add_argument('--shapes', default='rect', help='Label shapes to draw')
+        
         # GENERAL DRAWING OPTIONS
-        self.OptionParser.add_option(
-            '--delete_existing_guides',
-            action='store', type='inkbool',
-            dest='delete_existing_guides', default=False,
-            help='Delete existing guides from document')
-
-        self.OptionParser.add_option(
-            '--draw_edge_guides',
-            action='store', type='inkbool',
-            dest='draw_edge_guides', default=True,
-            help='Draw guides at label edges')
-
-        self.OptionParser.add_option(
-            '--draw_centre_guides',
-            action='store', type='inkbool',
-            dest='draw_centre_guides', default=True,
-            help='Draw guides at label centres')
-
-        self.OptionParser.add_option(
-            '--inset',
-            action='store', type='float',
-            dest='inset', default=5,
-            help='Inset to use for inset guides')
-
-        self.OptionParser.add_option(
-            '--draw_inset_guides',
-            action='store', type='inkbool',
-            dest='draw_inset_guides', default=True,
-            help='Draw guides inset to label edges')
-
-        self.OptionParser.add_option(
-            '--draw_shapes',
-            action='store', type='inkbool',
-            dest='draw_shapes', default=True,
-            help='Draw label outline shapes')
-
-        self.OptionParser.add_option(
-            '--shape_inset',
-            action='store', type='float',
-            dest='shape_inset', default=5,
-            help='Inset to use for inset shapes')
-
-        self.OptionParser.add_option(
-            '--draw_inset_shapes',
-            action='store', type='inkbool',
-            dest='draw_inset_shapes', default=True,
-            help='Draw shapes inset in the label outline')
-
-        self.OptionParser.add_option(
-            '--set_page_size',
-            action='store', type='inkbool',
-            dest='set_page_size', default=True,
-            help='Set page size (presets only)')
+        self.arg_parser.add_argument('--delete_existing_guides', type=inkex.Boolean, default=False, help='Delete existing guides from document')
+        self.arg_parser.add_argument('--draw_edge_guides', type=inkex.Boolean, default=True, help='Draw guides at label edges')
+        self.arg_parser.add_argument('--draw_centre_guides', type=inkex.Boolean, default=True, help='Draw guides at label centres')
+        self.arg_parser.add_argument('--inset', type=float, default=5, help='Inset to use for inset guides')
+        self.arg_parser.add_argument('--draw_inset_guides', type=inkex.Boolean, default=True, help='Draw guides inset to label edges')
+        self.arg_parser.add_argument('--draw_shapes', type=inkex.Boolean, default=True, help='Draw label outline shapes')
+        self.arg_parser.add_argument('--shape_inset',  default=5, help='Inset to use for inset shapes')
+        self.arg_parser.add_argument('--draw_inset_shapes', type=inkex.Boolean, default=True, help='Draw shapes inset in the label outline')
+        self.arg_parser.add_argument('--set_page_size', type=inkex.Boolean, default=True, help='Set page size (presets only)')
 
     def _to_uu(self, val, unit):
         """
         Transform a value in given units to User Units
         """
-        return self.unittouu(str(val) + unit)
+        return self.svg.unittouu(str(val) + unit)
 
     def _get_page_size(self, size):
         """
@@ -502,6 +384,7 @@ class LabelGuides(inkex.Effect):
 
         x = label_opts['margin']['l']
 
+        # Vertical guides, left to right
         for x_idx in range(label_opts['count']['x']):
 
             l_pos = x + inset
@@ -512,20 +395,18 @@ class LabelGuides(inkex.Effect):
             # Step over to next label
             x += label_opts['pitch']['x']
 
-        # Horizontal guides, top to bottom
-        height = self.unittouu(self.getDocumentHeight())
-
-        y = height - label_opts['margin']['t']
+        # Horizontal guides, bottom to top
+        y = label_opts['margin']['t']
 
         for y_idx in range(label_opts['count']['y']):
 
-            t_pos = y - inset
-            b_pos = y - label_opts['size']['y'] + inset
+            t_pos = y + inset
+            b_pos = y + label_opts['size']['y'] - inset
 
             guides['h'].extend([t_pos, b_pos])
 
             # Step over to next label
-            y -= label_opts['pitch']['y']
+            y += label_opts['pitch']['y']
 
         return guides
 
@@ -539,14 +420,15 @@ class LabelGuides(inkex.Effect):
         guides = self._get_regular_guides(label_opts, inset)
 
         # Get parent tag of the guides
-        nv = self.getNamedView()
+        nv = self.svg.namedview
 
         # Draw vertical guides
         for g in guides['v']:
             add_SVG_guide(g, 0, 'vert', colour, nv)
 
+        # Draw horizontal guides
         for g in guides['h']:
-            add_SVG_guide(0, g, 'horz', colour, nv)
+            add_SVG_guide(0, self.svg.height - g, 'horz', colour, nv)
 
     def _draw_centre_guides(self, document, label_opts, colour):
         """
@@ -554,7 +436,7 @@ class LabelGuides(inkex.Effect):
         """
 
         guides = self._get_regular_guides(label_opts, 0)
-        nv = self.getNamedView()
+        nv = self.svg.namedview
 
         for g in range(0, len(guides['v']), 2):
             pos = (guides['v'][g] + guides['v'][g + 1]) / 2
@@ -562,7 +444,7 @@ class LabelGuides(inkex.Effect):
 
         for g in range(0, len(guides['h']), 2):
             pos = (guides['h'][g] + guides['h'][g + 1]) / 2
-            add_SVG_guide(0, pos, 'horz', colour, nv)
+            add_SVG_guide(0, self.svg.height - pos, 'horz', colour, nv)
 
     def _draw_shapes(self, document, label_opts, inset):
         """
@@ -582,11 +464,8 @@ class LabelGuides(inkex.Effect):
 
         shapeLayer = add_SVG_layer(
                 self.document.getroot(),
-                self.uniqueId("outlineLayer"),
+                self.svg.get_unique_id("outlineLayer"),
                 "Label outlines")
-
-        # guides start from the bottom, SVG items from the top
-        height = self.unittouu(self.getDocumentHeight())
 
         # draw shapes between every set of two guides
         for xi in range(0, len(guides['v']), 2):
@@ -598,24 +477,22 @@ class LabelGuides(inkex.Effect):
                     cy = (guides['h'][yi] + guides['h'][yi + 1]) / 2
 
                     rx = cx - guides['v'][xi] - inset
-                    ry = guides['h'][yi] - cy - inset
+                    ry = cy - guides['h'][yi] - inset
 
-                    draw_SVG_ellipse(rx, ry, cx, height - cy, style,
-                                     shapeLayer)
+                    draw_SVG_ellipse(rx, ry, cx, cy, style, shapeLayer)
 
                 elif shape in ["rect", "rrect"]:
 
                     x = guides['v'][xi] + inset
                     w = guides['v'][xi + 1] - x - inset
 
-                    y = guides['h'][yi] - inset
-                    h = y - guides['h'][yi + 1] - inset
+                    y = guides['h'][yi] + inset
+                    h = guides['h'][yi + 1] - y - inset
 
                     rnd = self._to_uu(label_opts['corner_rad'],
                                       label_opts['units'])
 
-                    draw_SVG_rect(x, height - y, w, h, rnd, style, shapeLayer)
-
+                    draw_SVG_rect(x, y, w, h, rnd, style, shapeLayer)
     def _set_page_size(self, document, label_opts):
         """
         Set the SVG page size from the given label template definition
@@ -661,7 +538,7 @@ class LabelGuides(inkex.Effect):
             self._draw_label_guides(self.document, label_opts, 0,
                                     GUIDE_COLOURS['edge'])
 
-        if self._draw_centre_guides:
+        if self.options.draw_centre_guides:
             self._draw_centre_guides(self.document, label_opts,
                                      GUIDE_COLOURS['centre'])
 
@@ -679,6 +556,4 @@ class LabelGuides(inkex.Effect):
 
 
 if __name__ == '__main__':
-    # Create effect instance and apply it.
-    effect = LabelGuides()
-    effect.affect()
+    LabelGuides().run()
