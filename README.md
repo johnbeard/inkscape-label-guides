@@ -54,5 +54,25 @@ or
 There is an AUR package called
 [`inkscape-label-guides`][aur_page].
 
+## Development loop
+
+When developing this extension, you can symlink the directory like this:
+
+    ln -s /path/to/inkscape-label-guides ~/.config/inkscape/extensions/inkscape-label-guides
+
+Then you can edit the files in the repository and reload Inkscape to see the
+changes.
+
+As far as I know, there's no way to reload the extension without
+restarting Inkscape.
+
+# Packaging
+
+To package this extension for distribution, you can use the `make` target:
+
+    make zip
+
+Then upload the package to the Inkscape extension website.
+
 [inkscape_ext_page]: https://inkscape.org/~jjbeard/%E2%98%85label-guides
 [aur_page]: https://aur.archlinux.org/packages/inkscape-label-guides/
