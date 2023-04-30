@@ -7,7 +7,7 @@ Once installed, find the extension menu under
 Extensions->Render->Label Guides...
 
 The InkSpace extension page is
-[here](https://inkscape.org/en/~jjbeard/%E2%98%85label-guides).
+[here][inkscape_ext_page].
 
 This is what the output can look like:
 
@@ -52,4 +52,7 @@ or
 ### Arch Linux
 
 There is an AUR package called
-[`inkscape-label-guides`](https://aur.archlinux.org/packages/inkscape-label-guides/).
+[`inkscape-label-guides`][aur_page].
+
+[inkscape_ext_page]: https://inkscape.org/~jjbeard/%E2%98%85label-guides
+[aur_page]: https://aur.archlinux.org/packages/inkscape-label-guides/
