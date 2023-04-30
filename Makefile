@@ -1,5 +1,5 @@
 NAME=label-guides
-VERSION=1.1.0
+VERSION=1.1.1
 
 DESTDIR ?= /usr/share/inkscape/extensions
 
